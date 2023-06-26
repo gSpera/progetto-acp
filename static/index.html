@@ -1,0 +1,81 @@
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surfando con le stelle</title>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.0/dist/jquery.min.js"></script>
+    <link rel="stylesheet" href="main.css">
+</head>
+
+<body>
+    <div id="hero">
+        <h1>Surfando con le stelle</h1>
+        <h2>SPERAndo che arrivi</h2>
+    </div>
+
+    <h3>Biglietti disponibili</h3>
+    <div id="ricerca-viaggio">
+        <div class="ricerca-viaggio-filtro">
+            <label for="filtra-partenza">
+                Porto di partenza:
+            </label>
+            <input id="filtra-partenza">
+        </div>
+        <div class="ricerca-viaggio-filtro">
+            <label for="filtra-arrivo">
+                Porto di arrivo:
+            </label>
+            <input id="filtra-arrivo">
+        </div>
+        <div class="ricerca-viaggio-filtro">
+            <label for="filtra-data">
+                Data:
+            </label>
+            <input id="filtra-data" type="date">
+        </div>
+        <div class="ricerca-viaggio-filtro">
+            <label for="filtra-nposti-passeggeri">
+                Posti per passeggeri:
+            </label>
+            <input id="filtra-nposti-passeggeri" type="number" min="1" max="10" value="1">
+        </div>
+        <div class="ricerca-viaggio-filtro">
+            <label for="filtra-nposti-veicoli">
+                Posti per veicoli:
+            </label>
+            <input id="filtra-nposti-veicoli" type="number" min="0" max="10" value="0">
+        </div>
+    </div>
+
+    <ul id="lista-viaggi"></ul>
+
+    <div id="template-viaggio" class="viaggio">
+        <div>
+            <b>Viaggio del</b> <span class="template-viaggio-data"> </span>
+        </div>
+        <div>
+            <b>Alle</b> <span class="template-viaggio-orario"></span>
+        </div>
+        <div>
+            <b>Da</b> <span class="template-viaggio-partenza"></span>
+        </div>
+        <div>
+            <b>A</b> <span class="template-viaggio-arrivo"></span>
+        </div>
+        <div>
+            <b>Durata di</b> <span class="template-viaggio-durata"></span>
+        </div>
+        <div>
+            <b>Posti disponibili:</b> <span class="template-viaggio-nposti-passeggeri"></span>
+        </div>
+        <div>
+            <b>Posti auto disponibili:</b> <span class="template-viaggio-nposti-veicoli"></span>
+        </div>
+
+        <button class="template-viaggio-acquista">Acquista</button>
+    </div>
+    <script src="/main.js"></script>
+</body>
+
+</html>

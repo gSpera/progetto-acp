@@ -1,0 +1,123 @@
+@font-face {
+    font-family: 'Roboto';
+    src: url(/fonts/Roboto-Regular.ttf);
+}
+
+@font-face {
+    font-family: 'Caprasimo';
+    src: url(/fonts/Caprasimo-Regular.ttf);
+}
+
+h1,
+h2 {
+    text-align: center;
+    width: 100%;
+    font-size: 3rem;
+    color: #3acfcf;
+    margin-bottom: 0;
+}
+
+h2 {
+    font-size: 2rem;
+    color: #bae9e9;
+    font-family: Caprasimo;
+    margin-top: 0.5rem;
+}
+
+h3 {
+    font-size: 2rem;
+    padding-left: 1rem;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Roboto;
+    background-color: #f4fdfd;
+}
+
+#hero {
+    width: 100%;
+    height: calc(79vw/2);
+    background-image: url('/sfondo.svg');
+    background-repeat: no-repeat;
+    background-size: contain;
+    text-shadow: 0 0 1px black, 1px 1px 1px black;
+    margin: auto;
+}
+
+#ricerca-viaggio {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.ricerca-viaggio-filtro {
+    border: solid 1px #bae9e9;
+    padding: 1rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
+    margin-bottom: 1rem;
+    margin: 1rem;
+    border-radius: 5px;
+    box-shadow: 5px 5px 1px #bae9e9;
+}
+
+.ricerca-viaggio-filtro input {
+    background-color: #bae9e9;
+    border-radius: 5px;
+    height: 1.5rem;
+}
+
+#template-viaggio {
+    display: none;
+}
+
+#lista-viaggi {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin: 0;
+    padding: 0;
+    margin-top: 1rem;
+}
+
+.viaggio {
+    border: solid 3px black;
+    background-color: #e8fdfd;
+    width: 25vw;
+    height: 25vw;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    box-shadow: 10px 10px 1px 1px;
+    border-radius: 5px;
+}
+
+.viaggio:hover {
+    background-color: #cbfafa;
+}
+
+.template-viaggio-acquista {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: auto;
+    margin-bottom: 1rem;
+    display: block;
+    width: 80%;
+    height: 10%;
+    min-height: 3rem;
+    font-weight: bold;
+    background-color: #bae9e9;
+    border-radius: 5px;
+    box-shadow: 2px 2px 1px 1px;
+}
+
+@media screen and (max-width: 900px) {
+    .viaggio {
+        width: 90vw;
+        height: auto;
+    }
+}

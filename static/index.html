@@ -15,18 +15,22 @@
     </div>
 
     <h3>Biglietti disponibili</h3>
-    <div id="ricerca-viaggio">
+    <div class="ricerca-viaggio">
         <div class="ricerca-viaggio-filtro">
             <label for="filtra-partenza">
                 Porto di partenza:
             </label>
-            <input id="filtra-partenza">
+            <input id="filtra-partenza" list="filtra-partenza-autocomplete">
+            <datalist id="filtra-partenza-autocomplete">
+            </datalist>
         </div>
         <div class="ricerca-viaggio-filtro">
             <label for="filtra-arrivo">
                 Porto di arrivo:
             </label>
-            <input id="filtra-arrivo">
+            <input id="filtra-arrivo" list="filtra-arrivo-autocomplete">
+            <datalist id="filtra-arrivo-autocomplete">
+            </datalist>
         </div>
         <div class="ricerca-viaggio-filtro">
             <label for="filtra-data">
@@ -34,6 +38,8 @@
             </label>
             <input id="filtra-data" type="date">
         </div>
+    </div>
+    <div class="ricerca-viaggio">
         <div class="ricerca-viaggio-filtro">
             <label for="filtra-nposti-passeggeri">
                 Posti per passeggeri:
@@ -47,6 +53,7 @@
             <input id="filtra-nposti-veicoli" type="number" min="0" max="10" value="0">
         </div>
     </div>
+
 
     <ul id="lista-viaggi"></ul>
 
@@ -64,7 +71,7 @@
             <b>A</b> <span class="template-viaggio-arrivo"></span>
         </div>
         <div>
-            <b>Durata di</b> <span class="template-viaggio-durata"></span>
+            <b>Durata di</b> <span class="template-viaggio-durata"> minuti</span>
         </div>
         <div>
             <b>Posti disponibili:</b> <span class="template-viaggio-nposti-passeggeri"></span>
@@ -75,6 +82,75 @@
 
         <button class="template-viaggio-acquista">Acquista</button>
     </div>
+
+    <div id="compra-biglietto" class="hidden">
+        <div id="compra-biglietto-box">
+            <span id="compra-biglietto-chiudi" onclick="popupAcquistoChiudi()">X</span>
+            <h3>Viaggio n° <span id="compra-biglietto-codice-viaggio"></span></h3>
+            <div>
+                Del <span id="compra-biglietto-data"></span>
+            </div>
+            <div>
+                Da <span id="compra-biglietto-partenza"></span>
+                a <span id="compra-biglietto-arrivo"></span>
+            </div>
+
+            <div>
+                <label for="compra-biglietto-nominativo">Nominativo:</label>
+                <input id="compra-biglietto-nominativo" />
+            </div>
+            <div>
+                <label for="compra-biglietto-npasseggeri">Numero di passeggeri:</label>
+                <input id="compra-biglietto-npasseggeri" type="number" min="1" max="10" />
+            </div>
+            <div>
+                <label for="compra-biglietto-nveicoli">Numero di veicoli:</label>
+                <input id="compra-biglietto-nveicoli" type="number" min="1" max="10" />
+            </div>
+            <div>
+                <label for="compra-biglietto-numero-carta">Carta di credito:</label>
+                <input id="compra-biglietto-numero-carta" placeholder="0000-0000-0000-0000" />
+            </div>
+
+            <button id="compra-biglietto-btn">Acquista</button>
+        </div>
+    </div>
+
+    <div id="biglietto-acquistato" class="hidden">
+        <div id="biglietto-acquistato-box">
+            <span id="biglietto-acquistato-chiudi" onclick="popupAcquistoChiudi()">X</span>
+            <h3>Grazie per l'acquisto</h3>
+
+            <div>
+                Codice biglietto:
+                <span id="biglietto-acquistato-codice"></span>
+            </div>
+            <div>
+                Nominativo:
+                <span id="biglietto-acquistato-nominativo"></span>
+            </div>
+
+            <div>
+                Fornisci questo codice in biglietteria per ricevere il titolo di viaggio.
+            </div>
+            <b>Attenzione, questo documento non è un valido titolo di viaggio, recarsi in biglietteria</b>
+            <div>
+                <label for="compra-biglietto-npasseggeri">Numero di passeggeri:</label>
+                <input id="compra-biglietto-npasseggeri" type="number" min="1" max="10" />
+            </div>
+            <div>
+                <label for="compra-biglietto-nveicoli">Numero di veicoli:</label>
+                <input id="compra-biglietto-nveicoli" type="number" min="1" max="10" />
+            </div>
+            <div>
+                <label for="compra-biglietto-numero-carta">Carta di credito:</label>
+                <input id="compra-biglietto-numero-carta" placeholder="0000-0000-0000-0000" />
+            </div>
+
+            <button id="compra-biglietto-btn">Acquista</button>
+        </div>
+    </div>
+
     <script src="/main.js"></script>
 </body>
 

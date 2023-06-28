@@ -47,7 +47,7 @@ body {
     margin: auto;
 }
 
-#ricerca-viaggio {
+.ricerca-viaggio {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -64,7 +64,7 @@ body {
     box-shadow: 5px 5px 1px #bae9e9;
 }
 
-.ricerca-viaggio-filtro input {
+input {
     background-color: #bae9e9;
     border-radius: 5px;
     height: 1.5rem;
@@ -81,6 +81,8 @@ body {
     margin: 0;
     padding: 0;
     margin-top: 1rem;
+    /* Evita di saltare in alto se non ci sono risultati */
+    min-height: 50vh;
 }
 
 .viaggio {
@@ -110,9 +112,75 @@ body {
     height: 10%;
     min-height: 3rem;
     font-weight: bold;
-    background-color: #bae9e9;
+    background-color: #3a969686;
     border-radius: 5px;
     box-shadow: 2px 2px 1px 1px;
+}
+
+#compra-biglietto {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    background-color: #bae9e955;
+}
+
+#compra-biglietto-box {
+    position: relative;
+    width: 50%;
+    min-height: 30%;
+    margin: auto;
+    margin-top: 5rem;
+    padding-left: 1rem;
+    border-radius: 5px;
+    border: solid 3px black;
+    background-color: #e8fdfd;
+    box-shadow: 10px 10px 1px 1px;
+}
+
+#compra-biglietto-box label {
+    display: inline-block;
+    width: 30%;
+    margin-top: 0.5rem;
+}
+
+#compra-biglietto-box input {
+    width: 30%;
+}
+
+#compra-biglietto-btn {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    display: block;
+    width: 70%;
+    height: 5%;
+    min-height: 3rem;
+    font-weight: bold;
+    background-color: #3a969686;
+    border-radius: 5px;
+    box-shadow: 2px 2px 1px 1px;
+}
+
+#compra-biglietto-chiudi {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 1rem;
+    font-weight: bold;
+    cursor: grab;
+}
+
+.no-scrollbar {
+    overflow: hidden;
+}
+
+.hidden {
+    display: none;
 }
 
 @media screen and (max-width: 900px) {

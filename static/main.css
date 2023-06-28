@@ -117,7 +117,8 @@ input {
     box-shadow: 2px 2px 1px 1px;
 }
 
-#compra-biglietto {
+#compra-biglietto,
+#biglietto-acquistato {
     position: fixed;
     top: 0;
     left: 0;
@@ -128,7 +129,8 @@ input {
     background-color: #bae9e955;
 }
 
-#compra-biglietto-box {
+#compra-biglietto-box,
+#biglietto-acquistato-box {
     position: relative;
     width: 50%;
     min-height: 30%;
@@ -141,7 +143,8 @@ input {
     box-shadow: 10px 10px 1px 1px;
 }
 
-#compra-biglietto-box label {
+#compra-biglietto-box label,
+#compra-biglietto-box b {
     display: inline-block;
     width: 30%;
     margin-top: 0.5rem;
@@ -166,7 +169,8 @@ input {
     box-shadow: 2px 2px 1px 1px;
 }
 
-#compra-biglietto-chiudi {
+#compra-biglietto-chiudi,
+#biglietto-acquistato-chiudi {
     position: absolute;
     top: 0;
     right: 0;

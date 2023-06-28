@@ -32,11 +32,16 @@ function creaViaggio(viaggio) {
     el.find(".template-viaggio-durata").text(viaggio.durata)
     el.find(".template-viaggio-nposti-passeggeri").text(viaggio.npostiPasseggeri)
     el.find(".template-viaggio-nposti-veicoli").text(viaggio.npostiVeicoli)
+    el.find(".template-viaggio-costo-passeggero").text(viaggio.prezzoPasseggero)
+    el.find(".template-viaggio-costo-veicolo").text(viaggio.prezzoVeicolo)
     el.find(".template-viaggio-acquista").on("click", e => popupAcquisto(viaggio))
     return el
 }
 
 function popupAcquisto(viaggio) {
+    $("#compra-biglietto-meta-prezzo-passeggero").text(viaggio.prezzoPasseggero)
+    $("#compra-biglietto-meta-prezzo-veicolo").text(viaggio.prezzoVeicolo)
+
     $("#compra-biglietto").removeClass("hidden")
     $("body").addClass("no-scrollbar")
     $("#compra-biglietto-codice-viaggio").text(viaggio.id)
@@ -45,10 +50,69 @@ function popupAcquisto(viaggio) {
     $("#compra-biglietto-arrivo").text(viaggio.arrivo)
     $("#compra-biglietto-npasseggeri").val(fieldPasseggeri.val())
     $("#compra-biglietto-nveicoli").val(fieldVeicoli.val())
+    aggiornaPrezzo()
 }
 function popupAcquistoChiudi() {
     $("#compra-biglietto").addClass("hidden")
     $("body").removeClass("no-scrollbar")
+}
+
+function popupBigliettoAcquisto(vals) {
+    const viaggio = vals.viaggio
+    $("#biglietto-acquistato-hmac").text(vals.hmac)
+    $("#biglietto-acquistato-nominativo").text(vals.nominativo)
+
+    $("#biglietto-acquistato-codice").text(viaggio.id)
+    $("#biglietto-acquistato-partenza").text(viaggio.partenza)
+    $("#biglietto-acquistato-arrivo").text(viaggio.arrivo)
+    $("#biglietto-acquistato-data").text(new Date(viaggio.data).toLocaleString('it-IT'))
+    $("#biglietto-acquistato-npasseggeri").text(vals.prenotazione.numeroPasseggeri)
+    $("#biglietto-acquistato-nveicoli").text(vals.prenotazione.numeroVeicoli)
+
+    $("#biglietto-acquistato").removeClass("hidden")
+    $("body").addClass("no-scrollbar")
+}
+
+function popupBigliettoAcquistatoChiudi() {
+    $("#biglietto-acquistato").addClass("hidden")
+    $("body").removeClass("no-scrollbar")
+}
+
+function aggiornaPrezzo() {
+    const prezzoPasseggero = Number($("#compra-biglietto-meta-prezzo-passeggero").text())
+    const prezzoVeicolo = Number($("#compra-biglietto-meta-prezzo-veicolo").text())
+    const numeroPasseggeri = $("#compra-biglietto-npasseggeri").val()
+    const numeroVeicoli = $("#compra-biglietto-nveicoli").val()
+
+    const totale = numeroPasseggeri * prezzoPasseggero + numeroVeicoli * prezzoVeicolo
+    $("#compra-biglietto-totale").text(totale)
+}
+
+function acquista() {
+    const viaggioID = $("#compra-biglietto-codice-viaggio").text()
+    const preventivo = $("#compra-biglietto-totale").text()
+    const numeroPasseggeri = $("#compra-biglietto-npasseggeri").val()
+    const numeroVeicoli = $("#compra-biglietto-nveicoli").val()
+    const numeroCarta = $("#compra-biglietto-numero-carta").val()
+    const nominativo = $("#compra-biglietto-nominativo").val()
+
+    fetch("/api/acquista", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ viaggioID, preventivo, numeroPasseggeri, numeroVeicoli, numeroCarta, nominativo }),
+    })
+        .then(r => r.json())
+        .then(res => {
+            if (res.error) {
+                $("#compra-biglietto-errore")
+                    .text(res.msg)
+                    .fadeIn()
+                return
+            }
+
+            popupAcquistoChiudi()
+            popupBigliettoAcquisto({ ...res, nominativo })
+        })
 }
 
 $(".ricerca-viaggio-filtro").on("input", aggiornaViaggi)

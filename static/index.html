@@ -80,10 +80,18 @@
             <b>Posti auto disponibili:</b> <span class="template-viaggio-nposti-veicoli"></span>
         </div>
 
+        <div>
+            <span class="template-viaggio-costo-passeggero"></span>€ a persona<br>
+            <span class="template-viaggio-costo-veicolo"></span>€ a veicolo
+        </div>
+
         <button class="template-viaggio-acquista">Acquista</button>
     </div>
 
     <div id="compra-biglietto" class="hidden">
+        <span id="compra-biglietto-meta-prezzo-passeggero" class="hidden"></span>
+        <span id="compra-biglietto-meta-prezzo-veicolo" class="hidden"></span>
+
         <div id="compra-biglietto-box">
             <span id="compra-biglietto-chiudi" onclick="popupAcquistoChiudi()">X</span>
             <h3>Viaggio n° <span id="compra-biglietto-codice-viaggio"></span></h3>
@@ -101,29 +109,33 @@
             </div>
             <div>
                 <label for="compra-biglietto-npasseggeri">Numero di passeggeri:</label>
-                <input id="compra-biglietto-npasseggeri" type="number" min="1" max="10" />
+                <input id="compra-biglietto-npasseggeri" type="number" min="1" max="10" onkeyup="aggiornaPrezzo()" />
             </div>
             <div>
                 <label for="compra-biglietto-nveicoli">Numero di veicoli:</label>
-                <input id="compra-biglietto-nveicoli" type="number" min="1" max="10" />
+                <input id="compra-biglietto-nveicoli" type="number" min="1" max="10" onkeyup="aggiornaPrezzo()" />
+            </div>
+            <div>
+                <b>Totale:</b>
+                <span id="compra-biglietto-totale"></span>€
             </div>
             <div>
                 <label for="compra-biglietto-numero-carta">Carta di credito:</label>
                 <input id="compra-biglietto-numero-carta" placeholder="0000-0000-0000-0000" />
             </div>
 
-            <button id="compra-biglietto-btn">Acquista</button>
+            <button id="compra-biglietto-btn" onclick="acquista()">Acquista</button>
         </div>
     </div>
 
     <div id="biglietto-acquistato" class="hidden">
         <div id="biglietto-acquistato-box">
-            <span id="biglietto-acquistato-chiudi" onclick="popupAcquistoChiudi()">X</span>
+            <span id="biglietto-acquistato-chiudi" onclick="popupBigliettoAcquistatoChiudi()">X</span>
             <h3>Grazie per l'acquisto</h3>
 
             <div>
                 Codice biglietto:
-                <span id="biglietto-acquistato-codice"></span>
+                <span id="biglietto-acquistato-hmac"></span>
             </div>
             <div>
                 Nominativo:
@@ -135,19 +147,24 @@
             </div>
             <b>Attenzione, questo documento non è un valido titolo di viaggio, recarsi in biglietteria</b>
             <div>
-                <label for="compra-biglietto-npasseggeri">Numero di passeggeri:</label>
-                <input id="compra-biglietto-npasseggeri" type="number" min="1" max="10" />
+                <b>Corsa n°</b>
+                <span id="biglietto-acquistato-codice"></span>
+                <span id="biglietto-acquistato-partenza"></span>
+                -
+                <span id="biglietto-acquistato-arrivo"></span>
             </div>
             <div>
-                <label for="compra-biglietto-nveicoli">Numero di veicoli:</label>
-                <input id="compra-biglietto-nveicoli" type="number" min="1" max="10" />
+                <b>Del</b>
+                <span id="biglietto-acquistato-data"></span>
             </div>
             <div>
-                <label for="compra-biglietto-numero-carta">Carta di credito:</label>
-                <input id="compra-biglietto-numero-carta" placeholder="0000-0000-0000-0000" />
+                <b>Numero di passeggeri:</b>
+                <span id="biglietto-acquistato-npasseggeri"></span>
             </div>
-
-            <button id="compra-biglietto-btn">Acquista</button>
+            <div>
+                <label>Numero di veicoli:</label>
+                <span id="biglietto-acquistato-nveicoli"> </span>
+            </div>
         </div>
     </div>
 

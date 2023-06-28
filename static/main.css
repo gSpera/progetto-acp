@@ -179,6 +179,11 @@ input {
     cursor: grab;
 }
 
+#biglietto-acquistato-qrcode * {
+    display: block;
+    margin: auto;
+}
+
 .no-scrollbar {
     overflow: hidden;
 }

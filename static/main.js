@@ -69,6 +69,29 @@ function popupBigliettoAcquisto(vals) {
     $("#biglietto-acquistato-npasseggeri").text(vals.prenotazione.numeroPasseggeri)
     $("#biglietto-acquistato-nveicoli").text(vals.prenotazione.numeroVeicoli)
 
+    // Generiamo il codice QR della prenotazione
+    const qrcode = new QRCodeStyling({
+        width: 300,
+        height: 300,
+        data: JSON.stringify({ prenotazione: vals.prenotazione, codiceViaggio: vals.viaggio.id, data: vals.viaggio.data, hmac: vals.hmac }),
+        image: "/favicon.png",
+        margin: 10,
+        dotsOptions: {
+            type: "classy",
+            color: "#35b8b8",
+        },
+        cornersSquareOptions: {
+            type: "extra-rounded",
+        },
+        imageOptions: {
+            hideBackgroundDots: true,
+            imageSize: 0.4,
+            crossOrigin: "anonymous",
+        },
+    })
+
+    qrcode.append(document.getElementById("biglietto-acquistato-qrcode"))
+
     $("#biglietto-acquistato").removeClass("hidden")
     $("body").addClass("no-scrollbar")
 }
@@ -130,3 +153,25 @@ fetch("/api/autocomplete-arrivo")
     .then(autocompletes => autocompletes.forEach(arrivo => {
         $("#filtra-arrivo-autocomplete").append($("<option />").attr("value", arrivo))
     }))
+
+const qrcode = new QRCodeStyling({
+    width: 300,
+    height: 300,
+    data: JSON.stringify({}),
+    image: "/favicon.png",
+    margin: 10,
+    dotsOptions: {
+        type: "classy",
+        color: "#35b8b8",
+    },
+    cornersSquareOptions: {
+        type: "extra-rounded",
+    },
+    imageOptions: {
+        hideBackgroundDots: true,
+        imageSize: 0.4,
+        crossOrigin: "anonymous",
+    },
+})
+
+qrcode.append($("h3")[0])

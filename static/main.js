@@ -153,25 +153,3 @@ fetch("/api/autocomplete-arrivo")
     .then(autocompletes => autocompletes.forEach(arrivo => {
         $("#filtra-arrivo-autocomplete").append($("<option />").attr("value", arrivo))
     }))
-
-const qrcode = new QRCodeStyling({
-    width: 300,
-    height: 300,
-    data: JSON.stringify({}),
-    image: "/favicon.png",
-    margin: 10,
-    dotsOptions: {
-        type: "classy",
-        color: "#35b8b8",
-    },
-    cornersSquareOptions: {
-        type: "extra-rounded",
-    },
-    imageOptions: {
-        hideBackgroundDots: true,
-        imageSize: 0.4,
-        crossOrigin: "anonymous",
-    },
-})
-
-qrcode.append($("h3")[0])

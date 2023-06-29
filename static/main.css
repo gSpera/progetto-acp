@@ -154,7 +154,8 @@ input {
     width: 30%;
 }
 
-#compra-biglietto-btn {
+#compra-biglietto-btn,
+#biglietto-acquistato-stampa-btn {
     margin-left: auto;
     margin-right: auto;
     margin-top: 1rem;
@@ -196,5 +197,27 @@ input {
     .viaggio {
         width: 90vw;
         height: auto;
+    }
+}
+
+@media print {
+
+    #hero,
+    .ricerca-viaggio,
+    #lista-viaggi,
+    #template-viaggio,
+    #compra-biglietto,
+    #biglietto-acquistato-stampa-btn {
+        display: none;
+    }
+
+    #biglietto-acquistato {
+        background-color: #3a9696;
+    }
+
+    #biglietto-acquistato-box {
+        font-weight: 3rem;
+        width: 90vw;
+        height: 80vh;
     }
 }

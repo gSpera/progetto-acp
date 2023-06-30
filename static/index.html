@@ -89,12 +89,12 @@
         <button class="template-viaggio-acquista">Acquista</button>
     </div>
 
-    <div id="compra-biglietto" class="hidden">
+    <div id="compra-biglietto" class="overlay hidden">
         <span id="compra-biglietto-meta-prezzo-passeggero" class="hidden"></span>
         <span id="compra-biglietto-meta-prezzo-veicolo" class="hidden"></span>
 
-        <div id="compra-biglietto-box">
-            <span id="compra-biglietto-chiudi" onclick="popupAcquistoChiudi()">X</span>
+        <div id="compra-biglietto-box" class="box">
+            <span id="compra-biglietto-chiudi" class="chiudi" onclick="popupAcquistoChiudi()">X</span>
             <h3>Viaggio n° <span id="compra-biglietto-codice-viaggio"></span></h3>
             <div>
                 Del <span id="compra-biglietto-data"></span>
@@ -129,9 +129,9 @@
         </div>
     </div>
 
-    <div id="biglietto-acquistato" class="hidden">
-        <div id="biglietto-acquistato-box">
-            <span id="biglietto-acquistato-chiudi" onclick="popupBigliettoAcquistatoChiudi()">X</span>
+    <div id="biglietto-acquistato" class="overlay hidden">
+        <div id="biglietto-acquistato-box" class="box">
+            <span id="biglietto-acquistato-chiudi" class="chiudi" onclick="popupBigliettoAcquistatoChiudi()">X</span>
             <h3>Grazie per l'acquisto</h3>
 
             <div>
@@ -173,6 +173,40 @@
         </div>
     </div>
 
+    <div id="login" class="overlay hidden">
+        <div id="login-box" class="box">
+            <h3>Inserire le credenziali</h3>
+            <div>
+                <label for="login-username">Codice dipendente:</label>
+                <input id="login-username" />
+            </div>
+            <div>
+                <label for="login-password">Password:</label>
+                <input id="login-password" type="password" />
+            </div>
+            <div id="login-errori">
+            </div>
+            <button class="button" onclick="login()">Login</button>
+        </div>
+    </div>
+
+    <div id="admin" class="overlay hidden">
+        <div class="box">
+            <h3>Pannello admin per aggiungere viaggi</h3>
+            <div>
+                <label for="admin-file">Selezionare il file dei viaggi: </label>
+                <input id="admin-file" type="file" accept=".json" />
+            </div>
+
+            <div id="admin-errori"></div>
+
+            <button onclick="uploadCorse()">Carica</button>
+        </div>
+    </div>
+
+    <footer>
+        <a href="#blank" onclick="popupLogin()">Pannello Admin</a>
+    </footer>
     <script src="/main.js"></script>
 </body>
 

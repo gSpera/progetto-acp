@@ -1,0 +1,13 @@
+[
+    {
+        "id": 1,
+        "partenza": "Castellammare di Stabia",
+        "arrivo": "Ararat, Armenia",
+        "durata": 3600,
+        "npostiPasseggeri": 1024,
+        "npostiVeicoli": 1,
+        "data": 1688122864000,
+        "prezzoPasseggero": 100,
+        "prezzoVeicolo": 10
+    }
+]

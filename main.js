@@ -1,13 +1,16 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const crypto = require("crypto")
+const multer = require("multer")
+const bodyParser = require("body-parser")
+const upload = multer({ storage: multer.memoryStorage() }) // Potrebbe avere senso agiungere dei limiti
 
 const port = process.env.PORT || 8080
 const chiaveSegretaHMAC = process.env.HMAC || "Magari cambiami"
 mongoose.connect("mongodb://127.0.0.1:27017/")
 
 const viaggioSchema = new mongoose.Schema({
-    id: Number,
+    id: { type: Number, unique: true },
     partenza: String,
     arrivo: String,
     data: Number, // usiamo il timestamp unix per comodità, in millisecondi
@@ -19,17 +22,33 @@ const viaggioSchema = new mongoose.Schema({
 })
 const Viaggio = mongoose.model('Viaggio', viaggioSchema)
 
+const adminSchema = new mongoose.Schema({
+    username: String,
+    password: String, // Hash
+})
+const Admin = mongoose.model('Admin', adminSchema)
+
+Admin.findOne({ username: 'admin' }).exec()
+    .then(r => {
+        if (r == null) {
+            console.log("L'utente admin non è stato trovato, per comodità verrà aggiunto, con le credenziali admin:admin")
+            const hash = crypto.createHash('sha256').update('admin').digest('hex')
+            Admin.insertMany({ username: "admin", password: hash })
+        }
+    })
+
 const app = express()
 
 app.use(express.static('static'))
 app.use(express.json())
+app.use(bodyParser.json({ type: 'application/json' }))
 
 app.get("/api/viaggi", (req, res) => {
     const unGiorno = 24 * 60 * 60 * 1000 // Durata di un giorno, in millisecondi
     const partenza = req.query.partenza
     const arrivo = req.query.arrivo
     const data = Math.round(new Date(req.query.data).getTime() / unGiorno) * unGiorno // Timestamp
-    const npostiPasseggeri = Number(req.query.npostiPasseggeri) || 0
+    const npostiPasseggeri = Number(req.query.npostiPasseggeri) || 1
     const npostiVeicoli = Number(req.query.npostiVeicoli) || 0
 
     let search = {}
@@ -39,11 +58,35 @@ app.get("/api/viaggi", (req, res) => {
     search["npostiPasseggeri"] = { $gte: npostiPasseggeri }
     search["npostiVeicoli"] = { $gte: npostiVeicoli }
 
-    // console.log(search)
-
     Viaggio.find(search).exec()
         .then(found => res.send(found))
         .catch(err => console.error("Errore: " + err))
+})
+
+app.post("/api/viaggi", upload.single('file'), async (req, res) => {
+    const username = req.body.username
+    const password = req.body.password
+
+    if (!await isLoginValid(username, password)) {
+        res.json({ error: true, msg: "Credenziali invalide" })
+        return
+    }
+    const fileBuffer = req.file
+    let file
+    try {
+        file = JSON.parse(fileBuffer.buffer)
+    } catch (e) {
+        console.error("Invalid file:" + e)
+        res.json({ error: true, msg: "Invalid file" })
+        return
+    }
+
+    Viaggio.insertMany(file)
+        .catch(error => {
+            console.error(error)
+            res.json({ error: true, msg: "Impossibile caricare i dati nel database" })
+        })
+        .then(_ => res.json({ error: false }))
 })
 
 app.get("/api/autocomplete-partenza", (req, res) => {
@@ -113,8 +156,31 @@ app.post("/api/acquista", async (req, res) => {
     res.json({ ...ticket, hmac: hmac.digest("base64") })
 })
 
+app.post("/api/login", upload.none(), async (req, res) => {
+    const { username, password } = req.body
+    const ok = await isLoginValid(username, password)
+    res.json({ ok })
+})
+
 app.listen(port, () => {
     console.log("Listening on " + port)
 })
 
 function effettuaAccredito() { return true }
+
+async function isLoginValid(username, password) {
+    // Aspettiamo artificialmente 300ms,
+    // questo rallenta eventuali attacchi di bruteforce,
+    // sopratuttto visto che usiamo sha256 come algoritmo di hash
+    // che non è proprio adatto, qualcosa come blowfish sarebbe stato un idea migliore
+    await new Promise(resolve => { setTimeout(resolve, 300) })
+
+    const hash = crypto.createHash('sha256').update(password).digest('hex')
+    const res = await Admin.findOne({ username, password: hash }).exec()
+    if (res == null) { // Nessun risultato trovato
+        return false
+    }
+
+    return true
+    // Avrei potuto usare return res != null, ma così è più chiaro
+}

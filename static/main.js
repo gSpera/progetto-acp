@@ -101,6 +101,24 @@ function popupBigliettoAcquistatoChiudi() {
     $("body").removeClass("no-scrollbar")
 }
 
+function popupLogin() {
+    $("#login").removeClass("hidden")
+    $("body").addClass("no-scrollbar")
+}
+function popupLoginChiudi() {
+    $("#login").addClass("hidden")
+    $("body").removeClass("no-scrollbar")
+}
+
+function popupAdmin() {
+    $("#admin").removeClass("hidden")
+    $("body").addClass("no-scrollbar")
+}
+function popupAdminChiudi() {
+    $("#admin").addClass("hidden")
+    $("body").removeClass("no-scrollbar")
+}
+
 function aggiornaPrezzo() {
     const prezzoPasseggero = Number($("#compra-biglietto-meta-prezzo-passeggero").text())
     const prezzoVeicolo = Number($("#compra-biglietto-meta-prezzo-veicolo").text())
@@ -135,6 +153,57 @@ function acquista() {
 
             popupAcquistoChiudi()
             popupBigliettoAcquisto({ ...res, nominativo })
+        })
+}
+
+function login() {
+    // Il sistema di login è molto spartano, ora controlliamo che le credenziali siano valide
+    // Rimandiamo le credenziali ad ogni operazioni, così evitiamo problemi CSRF ed altre cose
+    const username = $("#login-username").val()
+    const password = $("#login-password").val()
+
+    fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+    })
+        .then(r => r.json())
+        .then(r => {
+            if (r.ok) {
+                popupLoginChiudi()
+                popupAdmin()
+                aggiornaViaggi()
+                return
+            }
+            const err = $("<div>").addClass("errore").text("Credenziali invalide")
+            setTimeout(() => err.remove(), 1000)
+            $("#login-errori").append(err)
+        })
+}
+
+function uploadCorse() {
+    const username = $("#login-username").val()
+    const password = $("#login-password").val()
+    const file = $("#admin-file")[0].files[0]
+    const form = new FormData()
+    form.append("username", username)
+    form.append("password", password)
+    form.append("file", file)
+
+    fetch("/api/viaggi", {
+        method: "POST",
+        body: form,
+    })
+        .then(r => r.json())
+        .then(r => {
+            if (!r.error) {
+                popupAdminChiudi()
+                setTimeout(aggiornaViaggi, 500)
+            } else {
+                const err = $("<div>").addClass("errore").text(r.msg)
+                setTimeout(() => err.remove(), 1000)
+                $("#admin-errori").append(err)
+            }
         })
 }
 

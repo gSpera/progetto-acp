@@ -7,7 +7,22 @@ const upload = multer({ storage: multer.memoryStorage() }) // Potrebbe avere sen
 
 const port = process.env.PORT || 8080
 const chiaveSegretaHMAC = process.env.HMAC || "Magari cambiami"
-mongoose.connect("mongodb://127.0.0.1:27017/")
+const databaseName = process.argv.filter(v => v == "--test-db").length >= 1 ? "test-db" : "surfando-con-le-stelle"
+
+if (databaseName == "test-db") {
+    console.log("Ambiente di test")
+}
+
+mongoose.connect(`mongodb://127.0.0.1:27017/${databaseName}`)
+    .then(_ => console.log("Connessione al database avvenuta con successo"))
+    .catch(err => {
+        console.error("Impossibile collegarsi al database")
+        console.error(err)
+        process.exit(1)
+    })
+mongoose.connection.on('error', err => {
+    console.error("Errore sul database:" + err)
+})
 
 const viaggioSchema = new mongoose.Schema({
     id: { type: Number, unique: true },

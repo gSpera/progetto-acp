@@ -23,18 +23,52 @@ function aggiornaViaggi() {
 }
 
 function creaViaggio(viaggio) {
+    // Creiamo i vari componenti
+    const durata = viaggio.durata // In minuti
+    const durataOre = Math.round(durata / 60)
+    const durataMinuti = Math.round(durata % 60)
+    let durataComponents = []
+    switch (durataOre) {
+        case 0:
+            break;
+        case 1:
+            durataComponents.push("un ora")
+            break
+        default:
+            durataComponents.push(`${durataOre} ore`)
+    }
+    switch (durataMinuti) {
+        case 0:
+            break;
+        case 1:
+            durataComponents.push("un minuto")
+            break
+        default:
+            durataComponents.push(`${durataMinuti} minuti`)
+    }
+
+    const durataString = durataComponents.join(" e ")
+
+
+    // Creiamo l'elemento
     const el = templateViaggio.clone()
     el.attr("id", "") // Rimuoviamo l'attributo id
     el.find(".template-viaggio-data").text(new Date(viaggio.data).toLocaleDateString('it-IT', { "dateStyle": "full" }))
-    el.find(".template-viaggio-orario").text(new Date(viaggio.data).toLocaleTimeString('it-IT'))
+    el.find(".template-viaggio-orario").text(new Date(viaggio.data).toLocaleTimeString('it-IT').split(':').splice(0, 2).join(':'))
     el.find(".template-viaggio-partenza").text(viaggio.partenza)
     el.find(".template-viaggio-arrivo").text(viaggio.arrivo)
-    el.find(".template-viaggio-durata").text(viaggio.durata)
+    el.find(".template-viaggio-durata").text(durataString)
     el.find(".template-viaggio-nposti-passeggeri").text(viaggio.npostiPasseggeri)
     el.find(".template-viaggio-nposti-veicoli").text(viaggio.npostiVeicoli)
     el.find(".template-viaggio-costo-passeggero").text(viaggio.prezzoPasseggero)
     el.find(".template-viaggio-costo-veicolo").text(viaggio.prezzoVeicolo)
     el.find(".template-viaggio-acquista").on("click", e => popupAcquisto(viaggio))
+
+
+    if (viaggio.npostiVeicoli == 0) {
+        el.find(":has(.template-viaggio-nposti-veicoli)").addClass("hidden")
+        el.find(":has(.template-viaggio-costo-veicolo)").addClass("hidden")
+    }
     return el
 }
 

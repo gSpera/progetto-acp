@@ -4,24 +4,35 @@ const crypto = require("crypto")
 const multer = require("multer")
 const bodyParser = require("body-parser")
 const upload = multer({ storage: multer.memoryStorage() }) // Potrebbe avere senso agiungere dei limiti
+const winston = require("winston")
 
 const port = process.env.PORT || 8080
 const chiaveSegretaHMAC = process.env.HMAC || "Magari cambiami"
-const databaseName = process.argv.filter(v => v == "--test-db").length >= 1 ? "test-db" : "surfando-con-le-stelle"
+const isTest = process.argv.filter(v => v == "--test").length >= 1
+const databaseName = isTest ? "test-db" : "surfando-con-le-stelle"
+
+const log = winston.createLogger({
+    level: "info",
+    format: isTest ? winston.format.simple() : winston.format.json(),
+
+    transports: [
+        new winston.transports.Console(),
+    ],
+})
 
 if (databaseName == "test-db") {
-    console.log("Ambiente di test")
+    log.info("Ambiente di test")
 }
 
 mongoose.connect(`mongodb://127.0.0.1:27017/${databaseName}`)
-    .then(_ => console.log("Connessione al database avvenuta con successo"))
+    .then(_ => log.info("Connessione al database avvenuta con successo"))
     .catch(err => {
-        console.error("Impossibile collegarsi al database")
-        console.error(err)
+        log.error("Impossibile collegarsi al database")
+        log.error(err)
         process.exit(1)
     })
 mongoose.connection.on('error', err => {
-    console.error("Errore sul database:" + err)
+    log.error("Errore sul database:" + err)
 })
 
 const viaggioSchema = new mongoose.Schema({
@@ -46,7 +57,7 @@ const Admin = mongoose.model('Admin', adminSchema)
 Admin.findOne({ username: 'admin' }).exec()
     .then(r => {
         if (r == null) {
-            console.log("L'utente admin non è stato trovato, per comodità verrà aggiunto, con le credenziali admin:admin")
+            log.info("L'utente admin non è stato trovato, per comodità verrà aggiunto, con le credenziali admin:admin")
             const hash = crypto.createHash('sha256').update('admin').digest('hex')
             Admin.insertMany({ username: "admin", password: hash })
         }
@@ -74,8 +85,11 @@ app.get("/api/viaggi", (req, res) => {
     search["npostiVeicoli"] = { $gte: npostiVeicoli }
 
     Viaggio.find(search).exec()
-        .then(found => res.send(found))
-        .catch(err => console.error("Errore: " + err))
+        .then(found => {
+            res.send(found)
+            log.info("Richista viaggi", { ip: req.ip, count: found.length, query: { partenza, arrivo, data, npostiPasseggeri, npostiVeicoli } })
+        })
+        .catch(err => log.error("Errore: " + err))
 })
 
 app.post("/api/viaggi", upload.single('file'), async (req, res) => {
@@ -84,24 +98,28 @@ app.post("/api/viaggi", upload.single('file'), async (req, res) => {
 
     if (!await isLoginValid(username, password)) {
         res.json({ error: true, msg: "Credenziali invalide" })
+        log.error("Login invalido", { username, password })
         return
     }
     const fileBuffer = req.file
     let file
     try {
         file = JSON.parse(fileBuffer.buffer)
-    } catch (e) {
-        console.error("Invalid file:" + e)
+    } catch (error) {
         res.json({ error: true, msg: "Invalid file" })
+        log.error("Impossibile aggiungere viaggi nel database, file invalido", { error })
         return
     }
 
     Viaggio.insertMany(file)
         .catch(error => {
-            console.error(error)
+            log.error("Impossibile aggiungere viaggi nel database", { error })
             res.json({ error: true, msg: "Impossibile caricare i dati nel database" })
         })
-        .then(_ => res.json({ error: false }))
+        .then(_ => {
+            res.json({ error: false })
+            log.info("Aggiunti viaggi", { username: username, count: file.length, fileSize: fileBuffer.buffer.length, ip: req.ip })
+        })
 })
 
 app.get("/api/autocomplete-partenza", (req, res) => {
@@ -124,12 +142,14 @@ app.post("/api/acquista", async (req, res) => {
     const viaggio = await Viaggio.findOne({ id: viaggioID }, "prezzoPasseggero prezzoVeicolo id data partenza arrivo").exec()
     if (viaggio == null) {
         res.json({ error: true, msg: "Errore interno, non esiste questo viaggio" })
+        log.error("Acquisto su un viaggio non esistente", { viaggioID, ip: req.ip })
         return
     }
 
     // Calcoliamo il prezzo, non possiamo fidarci del client (ovviamente)
     const prezzoTotale = Number(numeroPasseggeri) * viaggio.prezzoPasseggero + Number(numeroVeicoli) * viaggio.prezzoVeicolo
     if (prezzoTotale != preventivo) {
+        log.error("Prezzo calcolato diverso dal preventivo", { viaggioID, numeroPasseggeri, prezzoPasseggero: viaggio.prezzoPasseggero, numeroVeicoli, prezzoVeicoli: viaggio.prezzoVeicolo, preventivo: preventivo, calcolato: prezzoTotale })
         res.json({ error: true, msg: "Il prezzo calcolato è diverso dal preventivo, ricaricare la pagina" })
         return
     }
@@ -141,6 +161,7 @@ app.post("/api/acquista", async (req, res) => {
     ).exec()
     if (!ok) {
         res.json({ error: true, msg: "Impossibile riservare i posti, sono ancora disponibili??" })
+        log.error("Impossibile riservare i posti", { viaggioID, numeroPasseggeri, numeroVeicoli })
         return
     }
 
@@ -150,6 +171,7 @@ app.post("/api/acquista", async (req, res) => {
         // Rendiamo di nuovo disponibili i posti, in modo atomico
         Viaggio.updateOne({ id: viaggioID }, { $inc: { npostiPasseggeri: numeroPasseggeri, npostiVeicoli: numeroVeicoli } })
         res.json({ error: true, msg: "Impossibile eseguire l'accredito" })
+        log.error("Impossibile effettuare accredito", { viaggioID, numeroPasseggeri, numeroVeicoli, prezzo: prezzoTotale, numeroCarta })
         return
     }
 
@@ -167,21 +189,27 @@ app.post("/api/acquista", async (req, res) => {
     }
     const hmac = crypto.createHmac("sha1", chiaveSegretaHMAC)
     hmac.update(JSON.stringify(ticket))
+    const hmacDigest = hmac.digest("base64")
 
-    res.json({ ...ticket, hmac: hmac.digest("base64") })
+    res.json({ ...ticket, hmac: hmacDigest })
+    log.info("Generata una prenotazione", { ip: req.ip, viaggioID, hmac: hmacDigest, nominativo, prezzoTotale, numeroPasseggeri, numeroVeicoli, rand: prenotazione.rand })
 })
 
 app.post("/api/login", upload.none(), async (req, res) => {
     const { username, password } = req.body
     const ok = await isLoginValid(username, password)
+    log.info("Login", { username: username, ok })
     res.json({ ok })
 })
 
 app.listen(port, () => {
-    console.log("Listening on " + port)
+    log.info("Listening on " + port)
 })
 
-function effettuaAccredito() { return true }
+function effettuaAccredito(numeroCarta, totale) {
+    log.info("Accredito effettuato", { numeroCarta, totale })
+    return true
+}
 
 async function isLoginValid(username, password) {
     // Aspettiamo artificialmente 300ms,

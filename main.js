@@ -105,13 +105,13 @@ app.post("/api/viaggi", upload.single('file'), async (req, res) => {
 })
 
 app.get("/api/autocomplete-partenza", (req, res) => {
-    Viaggio.find({}, "partenza")
-        .then(found => res.send(found.map(v => v.partenza)))
+    Viaggio.distinct("partenza")
+        .then(found => res.send(found))
         .catch(err => console.error("Errore: " + err))
 })
 app.get("/api/autocomplete-arrivo", (req, res) => {
-    Viaggio.find({}, "arrivo")
-        .then(found => res.send(found.map(v => v.arrivo)))
+    Viaggio.distinct("arrivo")
+        .then(found => res.send(found))
         .catch(err => console.error("Errore: " + err))
 })
 

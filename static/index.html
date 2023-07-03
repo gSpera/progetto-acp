@@ -108,7 +108,7 @@
 
             <div>
                 <label for="compra-biglietto-nominativo">Nominativo:</label>
-                <input id="compra-biglietto-nominativo" />
+                <input id="compra-biglietto-nominativo" pattern="\w+" />
             </div>
             <div>
                 <label for="compra-biglietto-npasseggeri">Numero di passeggeri:</label>
@@ -124,7 +124,11 @@
             </div>
             <div>
                 <label for="compra-biglietto-numero-carta">Carta di credito:</label>
-                <input id="compra-biglietto-numero-carta" placeholder="0000-0000-0000-0000" />
+                <input id="compra-biglietto-numero-carta" placeholder="0000-0000-0000-0000"
+                    pattern="\d{4}-?\d{4}-?\d{4}-\d{4}" />
+            </div>
+
+            <div id="compra-biglietto-errori">
             </div>
 
             <button id="compra-biglietto-btn" onclick="acquista()">Acquista</button>

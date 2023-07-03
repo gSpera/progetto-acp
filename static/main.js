@@ -84,6 +84,11 @@ function popupAcquisto(viaggio) {
     $("#compra-biglietto-arrivo").text(viaggio.arrivo)
     $("#compra-biglietto-npasseggeri").val(fieldPasseggeri.val())
     $("#compra-biglietto-nveicoli").val(fieldVeicoli.val())
+    if (viaggio.npostiVeicoli == 0) {
+        $("#compra-biglietto-nveicoli").parent().addClass("hidden")
+    } else {
+        $("#compra-biglietto-nveicoli").parent().removeClass("hidden")
+    }
     aggiornaPrezzo()
 }
 function popupAcquistoChiudi() {
@@ -124,6 +129,7 @@ function popupBigliettoAcquisto(vals) {
         },
     })
 
+    $("#biglietto-acquistato-qrcode *").remove() // Eliminiamo i vecchi codici qr
     qrcode.append(document.getElementById("biglietto-acquistato-qrcode"))
 
     $("#biglietto-acquistato").removeClass("hidden")
@@ -170,6 +176,19 @@ function acquista() {
     const numeroVeicoli = $("#compra-biglietto-nveicoli").val()
     const numeroCarta = $("#compra-biglietto-numero-carta").val()
     const nominativo = $("#compra-biglietto-nominativo").val()
+
+    if (nominativo.length == 0) {
+        const err = $("<div>").addClass("errore").text("Aggiungere un nominativo")
+        setTimeout(() => err.remove(), 1000)
+        $("#compra-biglietto-errori").append(err)
+        return
+    }
+    if (numeroCarta.length == 0) {
+        const err = $("<div>").addClass("errore").text("Inserire il numero della carta")
+        setTimeout(() => err.remove(), 1000)
+        $("#compra-biglietto-errori").append(err)
+        return
+    }
 
     fetch("/api/acquista", {
         method: "POST",

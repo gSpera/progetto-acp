@@ -1,0 +1,68 @@
+[
+    {
+        "id": 101,
+        "partenza": "Castellammare di Stabia",
+        "arrivo": "Ararat, Armenia",
+        "durata": 60,
+        "npostiPasseggeri": 1024,
+        "npostiVeicoli": 0,
+        "data": 1688547600000,
+        "prezzoPasseggero": 100,
+        "prezzoVeicolo": 0
+    },
+    {
+        "id": 102,
+        "partenza": "Ararat, Armenia",
+        "arrivo": "Castellammare di Stabia",
+        "durata": 60,
+        "npostiPasseggeri": 1024,
+        "npostiVeicoli": 0,
+        "data": 1688720400000,
+        "prezzoPasseggero": 100,
+        "prezzoVeicolo": 0
+    },
+    {
+        "id": 201,
+        "partenza": "Castellammare di Stabia",
+        "arrivo": "Napoli",
+        "durata": 30,
+        "npostiPasseggeri": 10,
+        "npostiVeicoli": 0,
+        "data": 1686135600000,
+        "prezzoPasseggero": 100,
+        "prezzoVeicolo": 0
+    },
+    {
+        "id": 202,
+        "partenza": "Napoli",
+        "arrivo": "Castellammare di Stabia",
+        "durata": 30,
+        "npostiPasseggeri": 10,
+        "npostiVeicoli": 0,
+        "data": 1686142800000,
+        "prezzoPasseggero": 100,
+        "prezzoVeicolo": 0
+    },
+    {
+        "id": 301,
+        "partenza": "Massa di Somma",
+        "arrivo": "Sorrento",
+        "durata": 120,
+        "npostiPasseggeri": 20,
+        "npostiVeicoli": 10,
+        "data": 1691413200000,
+        "prezzoPasseggero": 50,
+        "prezzoVeicolo": 200
+    },
+    {
+        "id": 302,
+        "partenza": "Sorrento",
+        "arrivo": "Massa di Somma",
+        "durata": 120,
+        "npostiPasseggeri": 10,
+        "npostiVeicoli": 20,
+        "data": 1691427600000,
+        "prezzoPasseggero": 50,
+        "prezzoVeicolo": 200
+    }
+]

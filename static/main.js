@@ -23,18 +23,52 @@ function aggiornaViaggi() {
 }
 
 function creaViaggio(viaggio) {
+    // Creiamo i vari componenti
+    const durata = viaggio.durata // In minuti
+    const durataOre = Math.round(durata / 60)
+    const durataMinuti = Math.round(durata % 60)
+    let durataComponents = []
+    switch (durataOre) {
+        case 0:
+            break;
+        case 1:
+            durataComponents.push("un ora")
+            break
+        default:
+            durataComponents.push(`${durataOre} ore`)
+    }
+    switch (durataMinuti) {
+        case 0:
+            break;
+        case 1:
+            durataComponents.push("un minuto")
+            break
+        default:
+            durataComponents.push(`${durataMinuti} minuti`)
+    }
+
+    const durataString = durataComponents.join(" e ")
+
+
+    // Creiamo l'elemento
     const el = templateViaggio.clone()
     el.attr("id", "") // Rimuoviamo l'attributo id
     el.find(".template-viaggio-data").text(new Date(viaggio.data).toLocaleDateString('it-IT', { "dateStyle": "full" }))
-    el.find(".template-viaggio-orario").text(new Date(viaggio.data).toLocaleTimeString('it-IT'))
+    el.find(".template-viaggio-orario").text(new Date(viaggio.data).toLocaleTimeString('it-IT').split(':').splice(0, 2).join(':'))
     el.find(".template-viaggio-partenza").text(viaggio.partenza)
     el.find(".template-viaggio-arrivo").text(viaggio.arrivo)
-    el.find(".template-viaggio-durata").text(viaggio.durata)
+    el.find(".template-viaggio-durata").text(durataString)
     el.find(".template-viaggio-nposti-passeggeri").text(viaggio.npostiPasseggeri)
     el.find(".template-viaggio-nposti-veicoli").text(viaggio.npostiVeicoli)
     el.find(".template-viaggio-costo-passeggero").text(viaggio.prezzoPasseggero)
     el.find(".template-viaggio-costo-veicolo").text(viaggio.prezzoVeicolo)
     el.find(".template-viaggio-acquista").on("click", e => popupAcquisto(viaggio))
+
+
+    if (viaggio.npostiVeicoli == 0) {
+        el.find(":has(.template-viaggio-nposti-veicoli)").addClass("hidden")
+        el.find(":has(.template-viaggio-costo-veicolo)").addClass("hidden")
+    }
     return el
 }
 
@@ -50,6 +84,11 @@ function popupAcquisto(viaggio) {
     $("#compra-biglietto-arrivo").text(viaggio.arrivo)
     $("#compra-biglietto-npasseggeri").val(fieldPasseggeri.val())
     $("#compra-biglietto-nveicoli").val(fieldVeicoli.val())
+    if (viaggio.npostiVeicoli == 0) {
+        $("#compra-biglietto-nveicoli").parent().addClass("hidden")
+    } else {
+        $("#compra-biglietto-nveicoli").parent().removeClass("hidden")
+    }
     aggiornaPrezzo()
 }
 function popupAcquistoChiudi() {
@@ -90,6 +129,7 @@ function popupBigliettoAcquisto(vals) {
         },
     })
 
+    $("#biglietto-acquistato-qrcode *").remove() // Eliminiamo i vecchi codici qr
     qrcode.append(document.getElementById("biglietto-acquistato-qrcode"))
 
     $("#biglietto-acquistato").removeClass("hidden")
@@ -98,6 +138,24 @@ function popupBigliettoAcquisto(vals) {
 
 function popupBigliettoAcquistatoChiudi() {
     $("#biglietto-acquistato").addClass("hidden")
+    $("body").removeClass("no-scrollbar")
+}
+
+function popupLogin() {
+    $("#login").removeClass("hidden")
+    $("body").addClass("no-scrollbar")
+}
+function popupLoginChiudi() {
+    $("#login").addClass("hidden")
+    $("body").removeClass("no-scrollbar")
+}
+
+function popupAdmin() {
+    $("#admin").removeClass("hidden")
+    $("body").addClass("no-scrollbar")
+}
+function popupAdminChiudi() {
+    $("#admin").addClass("hidden")
     $("body").removeClass("no-scrollbar")
 }
 
@@ -119,6 +177,19 @@ function acquista() {
     const numeroCarta = $("#compra-biglietto-numero-carta").val()
     const nominativo = $("#compra-biglietto-nominativo").val()
 
+    if (nominativo.length == 0) {
+        const err = $("<div>").addClass("errore").text("Aggiungere un nominativo")
+        setTimeout(() => err.remove(), 1000)
+        $("#compra-biglietto-errori").append(err)
+        return
+    }
+    if (numeroCarta.length == 0) {
+        const err = $("<div>").addClass("errore").text("Inserire il numero della carta")
+        setTimeout(() => err.remove(), 1000)
+        $("#compra-biglietto-errori").append(err)
+        return
+    }
+
     fetch("/api/acquista", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -138,6 +209,57 @@ function acquista() {
         })
 }
 
+function login() {
+    // Il sistema di login è molto spartano, ora controlliamo che le credenziali siano valide
+    // Rimandiamo le credenziali ad ogni operazioni, così evitiamo problemi CSRF ed altre cose
+    const username = $("#login-username").val()
+    const password = $("#login-password").val()
+
+    fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+    })
+        .then(r => r.json())
+        .then(r => {
+            if (r.ok) {
+                popupLoginChiudi()
+                popupAdmin()
+                aggiornaViaggi()
+                return
+            }
+            const err = $("<div>").addClass("errore").text("Credenziali invalide")
+            setTimeout(() => err.remove(), 1000)
+            $("#login-errori").append(err)
+        })
+}
+
+function uploadCorse() {
+    const username = $("#login-username").val()
+    const password = $("#login-password").val()
+    const file = $("#admin-file")[0].files[0]
+    const form = new FormData()
+    form.append("username", username)
+    form.append("password", password)
+    form.append("file", file)
+
+    fetch("/api/viaggi", {
+        method: "POST",
+        body: form,
+    })
+        .then(r => r.json())
+        .then(r => {
+            if (!r.error) {
+                popupAdminChiudi()
+                setTimeout(aggiornaViaggi, 500)
+            } else {
+                const err = $("<div>").addClass("errore").text(r.msg)
+                setTimeout(() => err.remove(), 1000)
+                $("#admin-errori").append(err)
+            }
+        })
+}
+
 $(".ricerca-viaggio-filtro").on("input", aggiornaViaggi)
 
 aggiornaViaggi()
@@ -153,25 +275,3 @@ fetch("/api/autocomplete-arrivo")
     .then(autocompletes => autocompletes.forEach(arrivo => {
         $("#filtra-arrivo-autocomplete").append($("<option />").attr("value", arrivo))
     }))
-
-const qrcode = new QRCodeStyling({
-    width: 300,
-    height: 300,
-    data: JSON.stringify({}),
-    image: "/favicon.png",
-    margin: 10,
-    dotsOptions: {
-        type: "classy",
-        color: "#35b8b8",
-    },
-    cornersSquareOptions: {
-        type: "extra-rounded",
-    },
-    imageOptions: {
-        hideBackgroundDots: true,
-        imageSize: 0.4,
-        crossOrigin: "anonymous",
-    },
-})
-
-qrcode.append($("h3")[0])

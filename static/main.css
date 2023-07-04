@@ -37,6 +37,28 @@ body {
     background-color: #f4fdfd;
 }
 
+button {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    display: block;
+    width: 70%;
+    height: 5%;
+    min-height: 3rem;
+    font-weight: bold;
+    background-color: #3a969686;
+    border-radius: 5px;
+    box-shadow: 2px 2px 1px 1px;
+}
+
+footer {
+    display: block;
+    background-color: #3a9696;
+    border-radius: 5px 5px 0 0;
+    padding: 0.5rem;
+}
+
 #hero {
     width: 100%;
     height: calc(79vw/2);
@@ -117,8 +139,7 @@ input {
     box-shadow: 2px 2px 1px 1px;
 }
 
-#compra-biglietto,
-#biglietto-acquistato {
+.overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -129,8 +150,7 @@ input {
     background-color: #bae9e955;
 }
 
-#compra-biglietto-box,
-#biglietto-acquistato-box {
+.box {
     position: relative;
     width: 50%;
     min-height: 30%;
@@ -144,7 +164,8 @@ input {
 }
 
 #compra-biglietto-box label,
-#compra-biglietto-box b {
+#compra-biglietto-box b,
+#login-box label {
     display: inline-block;
     width: 30%;
     margin-top: 0.5rem;
@@ -154,23 +175,7 @@ input {
     width: 30%;
 }
 
-#compra-biglietto-btn {
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    display: block;
-    width: 70%;
-    height: 5%;
-    min-height: 3rem;
-    font-weight: bold;
-    background-color: #3a969686;
-    border-radius: 5px;
-    box-shadow: 2px 2px 1px 1px;
-}
-
-#compra-biglietto-chiudi,
-#biglietto-acquistato-chiudi {
+.chiudi {
     position: absolute;
     top: 0;
     right: 0;
@@ -192,9 +197,41 @@ input {
     display: none;
 }
 
+.errore {
+    width: 80%;
+    background-color: #cc1313c9;
+    display: block;
+    padding: 0.5rem;
+    margin: 0.5rem;
+    border-radius: 5px;
+    box-shadow: 1px 2px 1px 1px;
+}
+
 @media screen and (max-width: 900px) {
     .viaggio {
         width: 90vw;
         height: auto;
+    }
+}
+
+@media print {
+
+    #hero,
+    .ricerca-viaggio,
+    #lista-viaggi,
+    #template-viaggio,
+    #compra-biglietto,
+    #biglietto-acquistato-stampa-btn {
+        display: none;
+    }
+
+    #biglietto-acquistato {
+        background-color: #3a9696;
+    }
+
+    #biglietto-acquistato-box {
+        font-weight: 3rem;
+        width: 90vw;
+        height: 80vh;
     }
 }

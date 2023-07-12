@@ -281,6 +281,7 @@ function login_Utente(){
             nascondiPulsanti(username)
             utenteUsername= username
             utentePassword=password
+            caricaPrenotazioni()
         }
         else { const err = $("<div>").addClass("errore").text("credenziali invalide")   //errore di login andrea 
         setTimeout(() => err.remove(), 1000)
@@ -305,6 +306,7 @@ function registrazione_Utente(){
         nascondiPulsanti(username)
         utenteUsername=username
         utentePassword=password
+        caricaPrenotazioni()
 
     }, "json"); // comunicazione col server; usiamo post
 }
@@ -318,6 +320,7 @@ function nascondiPulsanti(username){  // nascondere i pulsanti dopo la registraz
 
 function caricaPrenotazioni(){ //andrea 
      $("#listaPrenotazioni").empty()
+     $("#prenotazioniEffettuate").removeClass("hidden")
      $.getJSON("/api/prenotazioni", {username: utenteUsername}, function(prenotazioni){
         for(var i=0; i<prenotazioni.length;i++){
             var prenotazione= $("#template-prenotazione").clone()

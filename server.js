@@ -17,7 +17,7 @@ const log = winston.createLogger({
 
     transports: [
         new winston.transports.Console(),
-    ],
+    ], 
 })
 
 if (databaseName == "test-db") {

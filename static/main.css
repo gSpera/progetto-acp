@@ -207,6 +207,29 @@ input {
     box-shadow: 1px 2px 1px 1px;
 }
 
+/*Sery*/
+#template-prenotazione{
+    display: none;
+    
+}
+
+/*Sery :D*/
+.prenotazione {
+    border: solid 3px black;
+    background-color: #e8fdfd;
+    width: 20vw;
+    padding: 0.5rem;
+    border-radius: 5px;
+    box-shadow: 10px 10px 1px 1px;
+    margin: 1rem;
+}
+
+/*Sery*/
+#listaPrenotazioni{
+    display: flex;
+    justify-content: space-around;
+}
+
 @media screen and (max-width: 900px) {
     .viaggio {
         width: 90vw;

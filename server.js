@@ -68,7 +68,18 @@ const utenteSchema = new mongoose.Schema({
         password: String, // Hash
     })
 const Utente = mongoose.model('Utente', utenteSchema)
+
+
+//aggiunta collezione prenotazione al database andrea
+const prenotazioneSchema = new mongoose.Schema({
+    usernameUtente: String,
+    idViaggio: Number,
+    numero_passeggeri: Number,
+    numero_veicoli:Number
     
+})
+const Prenotazione=mongoose.model('Prenotazione', prenotazioneSchema) // andrea
+
 const app = express()
 
 app.use(express.static('static'))
@@ -143,7 +154,7 @@ app.post("/api/acquista", async (req, res) => {
     // Estraiamo i parametrei
     const { viaggioID, preventivo,
         numeroPasseggeri, numeroVeicoli,
-        numeroCarta, nominativo } = req.body
+        numeroCarta, utenteUsername } = req.body
 
     const viaggio = await Viaggio.findOne({ id: viaggioID }, "prezzoPasseggero prezzoVeicolo id data partenza arrivo").exec()
     if (viaggio == null) {
@@ -183,7 +194,7 @@ app.post("/api/acquista", async (req, res) => {
 
     // Generiamo la prenotazione
     const prenotazione = {
-        nominativo,
+        utenteUsername,
         prezzoPagato: prezzoTotale,
         numeroPasseggeri,
         numeroVeicoli,
@@ -197,8 +208,11 @@ app.post("/api/acquista", async (req, res) => {
     hmac.update(JSON.stringify(ticket))
     const hmacDigest = hmac.digest("base64")
 
+
+    Prenotazione.insertMany([{usernameUtente: utenteUsername, idViaggio:viaggioID, numero_passeggeri:numeroPasseggeri, numero_veicoli: numeroVeicoli}])//inserisco nel database andrea
+
     res.json({ ...ticket, hmac: hmacDigest })
-    log.info("Generata una prenotazione", { ip: req.ip, viaggioID, hmac: hmacDigest, nominativo, prezzoTotale, numeroPasseggeri, numeroVeicoli, rand: prenotazione.rand })
+    log.info("Generata una prenotazione", { ip: req.ip, viaggioID, hmac: hmacDigest, prezzoTotale, numeroPasseggeri, numeroVeicoli, rand: prenotazione.rand })
 })
 
 app.post("/api/login", upload.none(), async (req, res) => {
@@ -227,6 +241,27 @@ app.post("/api/registrazioneUtente",express.urlencoded(),  function(req, res){  
     console.log(username);
     res.json({a:req.body.username, b:req.query.username});
 
+})
+
+app.get("/api/prenotazioni", function(req, res){  //ottenere prenotazioni per un username 
+    var username=req.query.username
+    Prenotazione.aggregate([
+        {
+            $match:{
+                usernameUtente: username
+            }
+        },
+        {
+            $lookup:{from: "viaggios",
+                     localField: "idViaggio",
+                    foreignField: "id",
+                    as:"viaggio"
+                    }
+        }
+    ]).then(function (prenotazioni){
+        res.json(prenotazioni)
+        
+    })
 })
 
 app.listen(port, () => {

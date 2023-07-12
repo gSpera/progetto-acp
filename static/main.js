@@ -1,5 +1,6 @@
 
-
+var utenteUsername=null
+var utentePassword=null // andrea
 const listaBiglietti = $("#lista-viaggi")
 const templateViaggio = $("#template-viaggio")
 
@@ -75,6 +76,10 @@ function creaViaggio(viaggio) {
 }
 
 function popupAcquisto(viaggio) {
+    if(utenteUsername ==null ){
+        alert("Acquisto non autorizzato. Effettua il Login!")
+        return 
+    }
     $("#compra-biglietto-meta-prezzo-passeggero").text(viaggio.prezzoPasseggero)
     $("#compra-biglietto-meta-prezzo-veicolo").text(viaggio.prezzoVeicolo)
 
@@ -177,14 +182,9 @@ function acquista() {
     const numeroPasseggeri = $("#compra-biglietto-npasseggeri").val()
     const numeroVeicoli = $("#compra-biglietto-nveicoli").val()
     const numeroCarta = $("#compra-biglietto-numero-carta").val()
-    const nominativo = $("#compra-biglietto-nominativo").val()
+   
 
-    if (nominativo.length == 0) {
-        const err = $("<div>").addClass("errore").text("Aggiungere un nominativo")
-        setTimeout(() => err.remove(), 1000)
-        $("#compra-biglietto-errori").append(err)
-        return
-    }
+   
     if (numeroCarta.length == 0) {
         const err = $("<div>").addClass("errore").text("Inserire il numero della carta")
         setTimeout(() => err.remove(), 1000)
@@ -195,7 +195,7 @@ function acquista() {
     fetch("/api/acquista", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ viaggioID, preventivo, numeroPasseggeri, numeroVeicoli, numeroCarta, nominativo }),
+        body: JSON.stringify({ viaggioID, preventivo, numeroPasseggeri, numeroVeicoli, numeroCarta, utenteUsername, utentePassword }),
     })
         .then(r => r.json())
         .then(res => {
@@ -207,7 +207,7 @@ function acquista() {
             }
 
             popupAcquistoChiudi()
-            popupBigliettoAcquisto({ ...res, nominativo })
+            popupBigliettoAcquisto({ ...res, nominativo: utenteUsername })
         })
 }
 
@@ -276,8 +276,12 @@ function login_Utente(){
     var username= $("#loginUtente-username").val();
     var password= $("#loginUtente-password").val();
     $.getJSON("/api/loginUtente", {username:username, password:password}, function(data){
-        if (data.ok ) {popupLoginChiudiUtente()
-        nascondiPulsanti(username) }
+        if (data.ok ) 
+        {   popupLoginChiudiUtente()
+            nascondiPulsanti(username)
+            utenteUsername= username
+            utentePassword=password
+        }
         else { const err = $("<div>").addClass("errore").text("credenziali invalide")   //errore di login andrea 
         setTimeout(() => err.remove(), 1000)
         $("#loginUtente-errori").append(err)}
@@ -295,8 +299,14 @@ function popupRegistrazioneChiudiUtente() {
 function registrazione_Utente(){
     var username= $("#registrazioneUtente-username").val();
     var password= $("#registrazioneUtente-password").val();
-    $.post("/api/registrazioneUtente", {username:username, password:password}, function(data){popupRegistrazioneChiudiUtente()
-    nascondiPulsanti(username)}, "json"); // comunicazione col server; usiamo post
+    $.post("/api/registrazioneUtente", {username:username, password:password}, function(data)
+    {   
+        popupRegistrazioneChiudiUtente()
+        nascondiPulsanti(username)
+        utenteUsername=username
+        utentePassword=password
+
+    }, "json"); // comunicazione col server; usiamo post
 }
 
 function nascondiPulsanti(username){  // nascondere i pulsanti dopo la registrazione o login andrea
@@ -304,6 +314,22 @@ function nascondiPulsanti(username){  // nascondere i pulsanti dopo la registraz
     $("#pulsanteRegistrazioneUtente").hide();
     $("#messaggioLogin").text("ciao "+ username).removeClass("hidden")
 
+}
+
+function caricaPrenotazioni(){ //andrea 
+     $("#listaPrenotazioni").empty()
+     $.getJSON("/api/prenotazioni", {username: utenteUsername}, function(prenotazioni){
+        for(var i=0; i<prenotazioni.length;i++){
+            var prenotazione= $("#template-prenotazione").clone()
+            prenotazione.attr("id", "")
+            prenotazione.find(".template-prenotazione-partenza").text(prenotazioni[i].viaggio[0].partenza)
+            prenotazione.find(".template-prenotazione-arrivo").text(prenotazioni[i].viaggio[0].arrivo)
+            prenotazione.find(".template-prenotazione-data").text(new Date(prenotazioni[i].viaggio[0].data).toLocaleString())
+            prenotazione.find(".template-prenotazione-numeroPasseggeri").text(prenotazioni[i].numero_passeggeri)
+            prenotazione.find(".template-prenotazione-numeroVeicoli").text(prenotazioni[i].numero_veicoli)
+            $("#listaPrenotazioni").append(prenotazione)
+        }
+     })
 }
 
 $(".ricerca-viaggio-filtro").on("input", aggiornaViaggi)

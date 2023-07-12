@@ -14,7 +14,15 @@
         <h1>Surfando con le stelle</h1>
         <h2>SPERAndo che arrivi</h2>
     </div>
+    <button id="pulsanteLoginUtente" onclick="loginUtente()">   <!--aggiunto button login -->
+        Login
+    </button>
 
+    <button id="pulsanteRegistrazioneUtente" onclick="popupRegistrazione()"> <!-- aggiunto button registrazione andrea -->
+        Registrati
+    </button>
+
+    <h3 class="hidden" id="messaggioLogin">  </h3> <!-- messaggio che sostituisce i button andrea-->
     <h3>Biglietti disponibili</h3>
     <div class="ricerca-viaggio">
         <div class="ricerca-viaggio-filtro">
@@ -195,6 +203,46 @@
             <button class="button" onclick="login()">Login</button>
         </div>
     </div>
+<!-- aggiunto popup login  andrea --> 
+    <div id="loginUtente" class="overlay hidden">
+        <div id="loginUtente-box" class="box">
+            <span class="chiudi" onclick="popupLoginChiudiUtente()">X</span>
+
+            <h3>Inserire le credenziali</h3>
+            <div>
+                <label for="loginUtente-username">Username:</label>
+                <input id="loginUtente-username" />
+            </div>
+            <div>
+                <label for="loginUtente-password">Password:</label>
+                <input id="loginUtente-password" type="password" />
+            </div>
+            <div id="loginUtente-errori">
+            </div>
+            <button class="button" onclick="login_Utente()">Login</button>
+        </div>
+    </div>
+
+    <!-- aggiunto popup registrazione andrea-->
+    <div id="registrazioneUtente" class="overlay hidden">
+        <div id="registrazioneUtente-box" class="box">
+            <span class="chiudi" onclick="popupRegistrazioneChiudiUtente()">X</span>
+
+            <h3>Inserire le credenziali</h3>
+            <div>
+                <label for="registrazioneUtente-username">Username:</label>
+                <input id="registrazioneUtente-username" />
+            </div>
+            <div>
+                <label for="registrazioneUtente-password">Password:</label>
+                <input id="registrazioneUtente-password" type="password" />
+            </div>
+            <div id="registrazioneUtente-errori">
+            </div>
+            <button class="button" onclick="registrazione_Utente()">Registrazione</button>
+        </div>
+    </div>
+
 
     <div id="admin" class="overlay hidden">
         <div class="box">

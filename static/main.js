@@ -1,3 +1,5 @@
+
+
 const listaBiglietti = $("#lista-viaggi")
 const templateViaggio = $("#template-viaggio")
 
@@ -258,6 +260,50 @@ function uploadCorse() {
                 $("#admin-errori").append(err)
             }
         })
+}
+//login utente andrea
+
+
+function loginUtente() {
+    $("#loginUtente").removeClass("hidden")
+    $("body").addClass("no-scrollbar")
+}
+function popupLoginChiudiUtente() {
+    $("#loginUtente").addClass("hidden")
+    $("body").removeClass("no-scrollbar")
+}
+function login_Utente(){
+    var username= $("#loginUtente-username").val();
+    var password= $("#loginUtente-password").val();
+    $.getJSON("/api/loginUtente", {username:username, password:password}, function(data){
+        if (data.ok ) {popupLoginChiudiUtente()
+        nascondiPulsanti(username) }
+        else { const err = $("<div>").addClass("errore").text("credenziali invalide")   //errore di login andrea 
+        setTimeout(() => err.remove(), 1000)
+        $("#loginUtente-errori").append(err)}
+    }); // comunicazione col server;
+}
+ // registrazione utente andrea
+function popupRegistrazione() {
+    $("#registrazioneUtente").removeClass("hidden")
+    $("body").addClass("no-scrollbar")
+}
+function popupRegistrazioneChiudiUtente() {
+    $("#registrazioneUtente").addClass("hidden")
+    $("body").removeClass("no-scrollbar")
+}
+function registrazione_Utente(){
+    var username= $("#registrazioneUtente-username").val();
+    var password= $("#registrazioneUtente-password").val();
+    $.post("/api/registrazioneUtente", {username:username, password:password}, function(data){popupRegistrazioneChiudiUtente()
+    nascondiPulsanti(username)}, "json"); // comunicazione col server; usiamo post
+}
+
+function nascondiPulsanti(username){  // nascondere i pulsanti dopo la registrazione o login andrea
+    $("#pulsanteLoginUtente").hide();
+    $("#pulsanteRegistrazioneUtente").hide();
+    $("#messaggioLogin").text("ciao "+ username).removeClass("hidden")
+
 }
 
 $(".ricerca-viaggio-filtro").on("input", aggiornaViaggi)

@@ -62,7 +62,13 @@ Admin.findOne({ username: 'admin' }).exec()
             Admin.insertMany({ username: "admin", password: hash })
         }
     })
-
+//aggiunta collezione utente al database andrea
+const utenteSchema = new mongoose.Schema({
+        username: String,
+        password: String, // Hash
+    })
+const Utente = mongoose.model('Utente', utenteSchema)
+    
 const app = express()
 
 app.use(express.static('static'))
@@ -200,6 +206,27 @@ app.post("/api/login", upload.none(), async (req, res) => {
     const ok = await isLoginValid(username, password)
     log.info("Login", { username: username, ok })
     res.json({ ok })
+})
+
+app.get("/api/loginUtente", function(req, res){
+    var username= req.query.username
+    var password=req.query.password
+    Utente.findOne({username:username , password:password}).then(function(utente){  //controllo nel database 
+        if(utente==null){
+            res.json({ok:false})
+        }else {
+            res.json({ok:true})
+        }
+    });
+    }); // login utente andrea controlliam ocredenaziali valide
+
+app.post("/api/registrazioneUtente",express.urlencoded(),  function(req, res){  // registrazione utente andrea 
+    var username=req.body.username
+    var password=req.body.password
+    Utente.insertMany([{username:username, password:password}]) //inseriamo nel database
+    console.log(username);
+    res.json({a:req.body.username, b:req.query.username});
+
 })
 
 app.listen(port, () => {

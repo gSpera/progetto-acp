@@ -264,6 +264,22 @@ app.get("/api/prenotazioni", function(req, res){  //ottenere prenotazioni per un
     })
 })
 
+app.delete("/api/prenotazione",express.urlencoded(), function(req,res){  //annullare prenotazione andrea
+
+    var username=req.body.username
+    var idViaggio=req.body.idViaggio
+    var numeroPasseggeri=req.body.numeroPasseggeri
+    var numeroVeicoli=req.body.numeroVeicoli
+    Viaggio.updateOne({id:idViaggio},{$inc:{npostiPasseggeri:numeroPasseggeri, npostiVeicoli:numeroVeicoli}})  
+    .then(console.log).catch(console.log)
+    Prenotazione.deleteOne({usernameUtente:username, idViaggio:idViaggio})
+    .then(function(r){res.json({ok:true, r:r})})
+    .catch(function(error){res.json({ok:false, error:error})})
+
+    console.log(numeroPasseggeri, numeroVeicoli)
+
+})
+
 app.listen(port, () => {
     log.info("Listening on " + port)
 })

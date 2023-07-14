@@ -141,6 +141,9 @@ function popupBigliettoAcquisto(vals) {
 
     $("#biglietto-acquistato").removeClass("hidden")
     $("body").addClass("no-scrollbar")
+
+    caricaPrenotazioni() //andrea
+    aggiornaViaggi()
 }
 
 function popupBigliettoAcquistatoChiudi() {
@@ -322,7 +325,14 @@ function caricaPrenotazioni(){ //andrea
      $("#listaPrenotazioni").empty()
      $("#prenotazioniEffettuate").removeClass("hidden")
      $.getJSON("/api/prenotazioni", {username: utenteUsername}, function(prenotazioni){
+        if(prenotazioni.length==0){
+            $("#listaPrenotazioni").append($("<h4>").text("Spiacenti, non hai più prenotazioni, effettuane altre e non rimanere senza biglietto"))
+
+        }
         for(var i=0; i<prenotazioni.length;i++){
+            var idViaggio=prenotazioni[i].idViaggio
+            var numeroPasseggeri=prenotazioni[i].numero_passeggeri
+            var numeroVeicoli=prenotazioni[i].numero_veicoli
             var prenotazione= $("#template-prenotazione").clone()
             prenotazione.attr("id", "")
             prenotazione.find(".template-prenotazione-partenza").text(prenotazioni[i].viaggio[0].partenza)
@@ -330,6 +340,14 @@ function caricaPrenotazioni(){ //andrea
             prenotazione.find(".template-prenotazione-data").text(new Date(prenotazioni[i].viaggio[0].data).toLocaleString())
             prenotazione.find(".template-prenotazione-numeroPasseggeri").text(prenotazioni[i].numero_passeggeri)
             prenotazione.find(".template-prenotazione-numeroVeicoli").text(prenotazioni[i].numero_veicoli)
+            prenotazione.find(".annullaPrenotazione").on("click", ()=>{ // annullare prenotazione andrea
+                $.ajax({url:"/api/prenotazione",
+                method:"DELETE",
+                data:{username:utenteUsername, idViaggio:idViaggio, numeroPasseggeri:numeroPasseggeri, numeroVeicoli:numeroVeicoli}, success:function(){
+                caricaPrenotazioni()
+                aggiornaViaggi()
+            }})
+            })
             $("#listaPrenotazioni").append(prenotazione)
         }
      })

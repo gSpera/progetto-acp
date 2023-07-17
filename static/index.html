@@ -122,6 +122,7 @@
          <button class="annullaPrenotazione" > ANNULLA</button>
     </div>
 
+    
     <div id="compra-biglietto" class="overlay hidden">
         <span id="compra-biglietto-meta-prezzo-passeggero" class="hidden"></span>
         <span id="compra-biglietto-meta-prezzo-veicolo" class="hidden"></span>
@@ -163,6 +164,7 @@
         </div>
     </div>
 
+    <!--Acquisto bislgietto-->
     <div id="biglietto-acquistato" class="overlay hidden">
         <div id="biglietto-acquistato-box" class="box">
             <span id="biglietto-acquistato-chiudi" class="chiudi" onclick="popupBigliettoAcquistatoChiudi()">X</span>
@@ -207,6 +209,7 @@
         </div>
     </div>
 
+    <!--Credenziali utente-->
     <div id="login" class="overlay hidden">
         <div id="login-box" class="box">
             <h3>Inserire le credenziali</h3>
@@ -223,6 +226,7 @@
             <button class="button" onclick="login()">Login</button>
         </div>
     </div>
+
 <!-- aggiunto popup login  andrea --> 
     <div id="loginUtente" class="overlay hidden">
         <div id="loginUtente-box" class="box">
@@ -263,13 +267,58 @@
         </div>
     </div>
 
-
+    <!--Aggiunta nuove rotte da parte dell'admin (Sery)-->
     <div id="admin" class="overlay hidden">
         <div class="box">
+            <span id="admin-chiudi" class="chiudi" onclick="popupAdminChiudi()">X</span>
             <h3>Pannello admin per aggiungere viaggi</h3>
             <div>
                 <label for="admin-file">Selezionare il file dei viaggi: </label>
                 <input id="admin-file" type="file" accept=".json" />
+            </div>
+
+            <hr> 
+
+            <div>
+                <div>
+                    <label for="admin-codice">Codice:</label>
+                    <input id="admin-codice" type="number"/>
+                </div>
+                <div>
+                    <label for="admin-partenza">Partenza:</label>
+                    <input id="admin-partenza" list="admin-partenza-autocomplete" />
+                    <datalist id="admin-partenza-autocomplete">
+                </div>
+                <div>
+                    <label for="admin-arrivo">Arrivo:</label>
+                    <input id="admin-arrivo" list="admin-arrivo-autocomplete"/>
+                    <datalist id="admin-arrivo-autocomplete">
+                </div>
+                <div>
+                    <label for="admin-data">Data:</label>
+                    <input id="admin-data" type="date"/>
+                </div>
+                <div>
+                    <label for="admin-numero-durata">Durata:</label>
+                    <input id="admin-numero-durata" type="number" value="60"/>
+                </div>
+                <div>
+                    <label for="admin-numero-passeggeri">Posti passeggeri:</label>
+                    <input id="admin-numero-passeggeri" type="number" value="100"/>
+                </div>
+                <div>
+                    <label for="admin-numero-veicoli">Posti veicoli:</label>
+                    <input id="admin-numero-veicoli" type="number" value="10"/>
+                </div>
+                <div>
+                    <label for="admin-prezzo-passeggeri">Prezzo per passeggero:</label>
+                    <input id="admin-prezzo-passeggeri" type="number" value="25"/>
+                </div>
+                <div>
+                    <label for="admin-prezzo-veicoli">Prezzo per veicoli:</label>
+                    <input id="admin-prezzo-veicoli" type="number" value="100"/>
+                </div>
+
             </div>
 
             <div id="admin-errori"></div>
@@ -278,6 +327,7 @@
         </div>
     </div>
 
+    <!--Pannello di accesso per gli admin-->
     <footer>
         <a href="#blank" onclick="popupLogin()">Pannello Admin</a>
     </footer>

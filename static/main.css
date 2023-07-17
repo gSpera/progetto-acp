@@ -165,7 +165,8 @@ input {
 
 #compra-biglietto-box label,
 #compra-biglietto-box b,
-#login-box label {
+#login-box label,
+#admin label {
     display: inline-block;
     width: 30%;
     margin-top: 0.5rem;

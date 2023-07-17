@@ -239,34 +239,75 @@ function login() {
         })
 }
 
+//Aggiunta delle rotte da parte dell'admin (Sery)
 function uploadCorse() {
     const username = $("#login-username").val()
     const password = $("#login-password").val()
     const file = $("#admin-file")[0].files[0]
-    const form = new FormData()
-    form.append("username", username)
-    form.append("password", password)
-    form.append("file", file)
+    if (file == undefined) {
+        // Carica dai campi
+        var codice = $("#admin-codice").val()
+        var partenza = $("#admin-partenza").val()
+        var arrivo = $("#admin-arrivo").val()
+        var data = $("#admin-data").val()
+        var durata = $("#admin-durata").val()
+        var numeroPasseggeri = $("#admin-numero-passeggeri").val()
+        var numeroVeicoli = $("#admin-numero-veicoli").val()
+        var prezzoPasseggero = $("#admin-prezzo-passeggeri").val()
+        var prezzoVeicolo = $("#admin-prezzo-veicoli").val()
+        data = new Date(data).getTime()
 
-    fetch("/api/viaggi", {
-        method: "POST",
-        body: form,
-    })
-        .then(r => r.json())
-        .then(r => {
-            if (!r.error) {
-                popupAdminChiudi()
-                setTimeout(aggiornaViaggi, 500)
-            } else {
-                const err = $("<div>").addClass("errore").text(r.msg)
-                setTimeout(() => err.remove(), 1000)
-                $("#admin-errori").append(err)
+        $.ajax({
+            url: "/api/viaggio",
+            method: "POST", //Metodo POST per comunicare con il server 
+            data: {
+                codice: codice,
+                partenza: partenza,
+                arrivo: arrivo,
+                data: data,
+                durata: durata,
+                numeroPasseggeri: numeroPasseggeri,
+                numeroVeicoli: numeroVeicoli,
+                prezzoPasseggero: prezzoPasseggero,
+                prezzoVeicolo: prezzoVeicolo,
+            },
+            success: function(resp) {
+                if (!resp.ok) {
+                    const err = $("<div>").addClass("errore").text(resp.msg)
+                    setTimeout(() => err.remove(), 1000)
+                    $("#admin-errori").append(err)
+                } else {
+                    setTimeout(aggiornaViaggi, 500)
+                    alert("Hai aggiunto una nuova corsa!")
+                }
             }
         })
+    } else {
+        // Carica dal file
+        const form = new FormData()
+        form.append("username", username)
+        form.append("password", password)
+        form.append("file", file)
+
+        fetch("/api/viaggi", {
+            method: "POST",
+            body: form,
+        })
+            .then(r => r.json())
+            .then(r => {
+                if (!r.error) {
+                    popupAdminChiudi()
+                    setTimeout(aggiornaViaggi, 500)
+                } else {
+                    const err = $("<div>").addClass("errore").text(r.msg)
+                    setTimeout(() => err.remove(), 1000)
+                    $("#admin-errori").append(err)
+                }
+            })
+    }
 }
+
 //login utente andrea
-
-
 function loginUtente() {
     $("#loginUtente").removeClass("hidden")
     $("body").addClass("no-scrollbar")
@@ -291,6 +332,7 @@ function login_Utente(){
         $("#loginUtente-errori").append(err)}
     }); // comunicazione col server;
 }
+
  // registrazione utente andrea
 function popupRegistrazione() {
     $("#registrazioneUtente").removeClass("hidden")
@@ -362,9 +404,11 @@ fetch("/api/autocomplete-partenza")
     .then(r => r.json())
     .then(autocompletes => autocompletes.forEach(partenza => {
         $("#filtra-partenza-autocomplete").append($("<option />").attr("value", partenza))
+        $("#admin-partenza-autocomplete").append($("<option />").attr("value", partenza))
     }))
 fetch("/api/autocomplete-arrivo")
     .then(r => r.json())
     .then(autocompletes => autocompletes.forEach(arrivo => {
         $("#filtra-arrivo-autocomplete").append($("<option />").attr("value", arrivo))
+        $("#admin-arrivo-autocomplete").append($("<option />").attr("value", arrivo))
     }))

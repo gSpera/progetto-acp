@@ -97,7 +97,7 @@ app.get("/api/viaggi", (req, res) => {
     let search = {}
     if (partenza) search["partenza"] = { $regex: String(partenza), $options: "i" }
     if (arrivo) search["arrivo"] = { $regex: String(arrivo), $options: "i" }
-    if (data) search["data"] = { $gte: data, $lt: data + unGiorno }
+    if (req.query.data) search["data"] = { $gte: data, $lt: data + unGiorno }
     search["npostiPasseggeri"] = { $gte: npostiPasseggeri }
     search["npostiVeicoli"] = { $gte: npostiVeicoli }
 
@@ -278,6 +278,44 @@ app.delete("/api/prenotazione",express.urlencoded(), function(req,res){  //annul
 
     console.log(numeroPasseggeri, numeroVeicoli)
 
+})
+
+app.post("/api/viaggio", express.urlencoded(), function(req, res) {
+    var codice = req.body.codice
+    var partenza = req.body.partenza
+    var arrivo = req.body.arrivo
+    var data = req.body.data
+    var durata = req.body.durata
+    var numeroPasseggeri = req.body.numeroPasseggeri
+    var numeroVeicoli = req.body.numeroVeicoli
+    var prezzoPasseggero = req.body.prezzoPasseggero
+    var prezzoVeicolo = req.body.prezzoVeicolo
+
+    console.log("Nuovo viaggio: " + codice)
+
+    Viaggio.findOne({id: codice}).exec()
+    .then(duplicato => {
+        if (duplicato != null) {
+            res.json({ok: false, msg: "Esiste un viaggio con lo stesso ID"})
+            return
+        }
+
+        Viaggio.insertMany([
+            {
+                id: codice,
+                partenza: partenza,
+                arrivo: arrivo,
+                data: data,
+                durata: durata,
+                npostiPasseggeri: numeroPasseggeri,
+                npostiVeicoli: numeroVeicoli,
+                prezzoPasseggero: prezzoPasseggero,
+                prezzoVeicolo: prezzoVeicolo,
+            }
+        ])
+
+        res.json({ok: true})
+    })
 })
 
 app.listen(port, () => {

@@ -318,6 +318,30 @@ app.post("/api/viaggio", express.urlencoded(), function(req, res) {
     })
 })
 
+// Elimina viaggio, carmine
+app.delete("/api/viaggio", express.urlencoded(), function(req, res) {
+    var codice = Number(req.body.id)
+
+    console.log("Elimina viaggio:"+ codice)
+    Viaggio.findOne({ id: codice })
+    .then(function(viaggio) {
+        Prenotazione.find({idViaggio: codice })
+        .then(function(prenotazioni) {
+            for(var i =0;i<prenotazioni.length; i++) {
+                console.log("Annullamento prenotazione: " + codice, prenotazioni[i].usernameUtente)
+                rimborsaPrenotazione(prenotazioni)
+            }
+
+            Viaggio.deleteOne({ id: codice })
+            res.json({ ok: true })
+        })
+    })
+})
+function rimborsaPrenotazione(prenotazione) {
+    console.log("Rimborso prenotazione: " + JSON.stringify(prenotazione))
+}
+
+
 app.listen(port, () => {
     log.info("Listening on " + port)
 })

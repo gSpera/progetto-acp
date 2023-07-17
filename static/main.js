@@ -21,7 +21,11 @@ function aggiornaViaggi() {
         .then(r => r.json())
         .then(r => {
             listaBiglietti.empty()
-            r.forEach(viaggio => listaBiglietti.append(creaViaggio(viaggio)))
+            $("#admin-elimina-lista").empty()
+            r.forEach(viaggio => {
+                listaBiglietti.append(creaViaggio(viaggio))
+                $("#admin-elimina-lista").append($("<option>").attr("value", viaggio.id).text(viaggio.id + " - " + viaggio.partenza + " a " + viaggio.arrivo + " del " + new Date(viaggio.data).toLocaleDateString("it-IT")))
+            })
         })
 }
 
@@ -393,6 +397,18 @@ function caricaPrenotazioni(){ //andrea
             $("#listaPrenotazioni").append(prenotazione)
         }
      })
+}
+
+function eliminaViaggio() {
+    $.ajax({
+        url: "/api/viaggio",
+        method: "DELETE",
+        data:  { id: $("#admin-elimina-lista").val() },
+        success: function(resp) {
+            alert("Eliminato")
+            aggiornaViaggi()
+        }
+    })
 }
 
 $(".ricerca-viaggio-filtro").on("input", aggiornaViaggi)

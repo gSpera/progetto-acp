@@ -271,59 +271,71 @@
     <div id="admin" class="overlay hidden">
         <div class="box">
             <span id="admin-chiudi" class="chiudi" onclick="popupAdminChiudi()">X</span>
-            <h3>Pannello admin per aggiungere viaggi</h3>
-            <div>
-                <label for="admin-file">Selezionare il file dei viaggi: </label>
-                <input id="admin-file" type="file" accept=".json" />
-            </div>
+            <h3>Pannello admin</h3>
 
-            <hr> 
-
-            <div>
+            <details>
+                <summary>Aggiungi viaggio</summary>
                 <div>
-                    <label for="admin-codice">Codice:</label>
-                    <input id="admin-codice" type="number"/>
-                </div>
-                <div>
-                    <label for="admin-partenza">Partenza:</label>
-                    <input id="admin-partenza" list="admin-partenza-autocomplete" />
-                    <datalist id="admin-partenza-autocomplete">
-                </div>
-                <div>
-                    <label for="admin-arrivo">Arrivo:</label>
-                    <input id="admin-arrivo" list="admin-arrivo-autocomplete"/>
-                    <datalist id="admin-arrivo-autocomplete">
-                </div>
-                <div>
-                    <label for="admin-data">Data:</label>
-                    <input id="admin-data" type="date"/>
-                </div>
-                <div>
-                    <label for="admin-numero-durata">Durata:</label>
-                    <input id="admin-numero-durata" type="number" value="60"/>
-                </div>
-                <div>
-                    <label for="admin-numero-passeggeri">Posti passeggeri:</label>
-                    <input id="admin-numero-passeggeri" type="number" value="100"/>
-                </div>
-                <div>
-                    <label for="admin-numero-veicoli">Posti veicoli:</label>
-                    <input id="admin-numero-veicoli" type="number" value="10"/>
-                </div>
-                <div>
-                    <label for="admin-prezzo-passeggeri">Prezzo per passeggero:</label>
-                    <input id="admin-prezzo-passeggeri" type="number" value="25"/>
-                </div>
-                <div>
-                    <label for="admin-prezzo-veicoli">Prezzo per veicoli:</label>
-                    <input id="admin-prezzo-veicoli" type="number" value="100"/>
+                    <label for="admin-file">Selezionare il file dei viaggi: </label>
+                    <input id="admin-file" type="file" accept=".json" />
                 </div>
 
-            </div>
+                <hr> 
 
-            <div id="admin-errori"></div>
+                <div>
+                    <div>
+                        <label for="admin-codice">Codice:</label>
+                        <input id="admin-codice" type="number"/>
+                    </div>
+                    <div>
+                        <label for="admin-partenza">Partenza:</label>
+                        <input id="admin-partenza" list="admin-partenza-autocomplete" />
+                        <datalist id="admin-partenza-autocomplete">
+                    </div>
+                    <div>
+                        <label for="admin-arrivo">Arrivo:</label>
+                        <input id="admin-arrivo" list="admin-arrivo-autocomplete"/>
+                        <datalist id="admin-arrivo-autocomplete">
+                    </div>
+                    <div>
+                        <label for="admin-data">Data:</label>
+                        <input id="admin-data" type="date"/>
+                    </div>
+                    <div>
+                        <label for="admin-numero-durata">Durata:</label>
+                        <input id="admin-numero-durata" type="number" value="60"/>
+                    </div>
+                    <div>
+                        <label for="admin-numero-passeggeri">Posti passeggeri:</label>
+                        <input id="admin-numero-passeggeri" type="number" value="100"/>
+                    </div>
+                    <div>
+                        <label for="admin-numero-veicoli">Posti veicoli:</label>
+                        <input id="admin-numero-veicoli" type="number" value="10"/>
+                    </div>
+                    <div>
+                        <label for="admin-prezzo-passeggeri">Prezzo per passeggero:</label>
+                        <input id="admin-prezzo-passeggeri" type="number" value="25"/>
+                    </div>
+                    <div>
+                        <label for="admin-prezzo-veicoli">Prezzo per veicoli:</label>
+                        <input id="admin-prezzo-veicoli" type="number" value="100"/>
+                    </div>
 
-            <button onclick="uploadCorse()">Carica</button>
+                </div>
+                
+                <div id="admin-errori"></div>
+                
+                <button onclick="uploadCorse()">Carica</button>
+            </details>
+
+            <!-- Elimina viaggio -->
+            <details>
+                <summary>Elimina viaggio</summary>
+                <select id="admin-elimina-lista"></select>
+                <button onclick="eliminaViaggio()">Elimina</button>
+            </details> 
+            <br>
         </div>
     </div>
 

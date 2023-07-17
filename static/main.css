@@ -86,7 +86,7 @@ footer {
     box-shadow: 5px 5px 1px #bae9e9;
 }
 
-input {
+input, select {
     background-color: #bae9e9;
     border-radius: 5px;
     height: 1.5rem;

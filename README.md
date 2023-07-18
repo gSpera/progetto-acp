@@ -5,9 +5,18 @@
 ### COGNOME: ``Spera``
 ### MATRICOLA: ``N46005563``
 
-### DOCENTE: ``Della Corte``
-
 
 ### NOME: ``Andrea``
 ### COGNOME: ``Roscigno``
-### MATRICOLA: ``bho``
+### MATRICOLA: ``N46005685``
+
+### NOME: ``Serena``
+### COGNOME: ``Savarese``
+### MATRICOLA: ``N46005517``
+
+### NOME: ``Carmine``
+### COGNOME: ``De Rosa``
+### MATRICOLA: ``N46005627``
+
+
+### DOCENTE: ``Raffeale Della Corte``

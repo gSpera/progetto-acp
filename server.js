@@ -1,3 +1,6 @@
+//Qui ci occupiamo della comunicazione con il database
+
+
 const express = require('express')
 const mongoose = require('mongoose')
 const crypto = require("crypto")
@@ -62,7 +65,8 @@ Admin.findOne({ username: 'admin' }).exec()
             Admin.insertMany({ username: "admin", password: hash })
         }
     })
-//aggiunta collezione utente al database andrea
+
+//Aggiunta collezione utente al database Andrea
 const utenteSchema = new mongoose.Schema({
         username: String,
         password: String, // Hash
@@ -70,7 +74,7 @@ const utenteSchema = new mongoose.Schema({
 const Utente = mongoose.model('Utente', utenteSchema)
 
 
-//aggiunta collezione prenotazione al database andrea
+//Aggiunta collezione prenotazione al database Andrea
 const prenotazioneSchema = new mongoose.Schema({
     usernameUtente: String,
     idViaggio: Number,
@@ -139,6 +143,7 @@ app.post("/api/viaggi", upload.single('file'), async (req, res) => {
         })
 })
 
+//Autocomplete partenza ed arrivo (Sery)
 app.get("/api/autocomplete-partenza", (req, res) => {
     Viaggio.distinct("partenza")
         .then(found => res.send(found))
@@ -149,6 +154,7 @@ app.get("/api/autocomplete-arrivo", (req, res) => {
         .then(found => res.send(found))
         .catch(err => console.error("Errore: " + err))
 })
+
 
 app.post("/api/acquista", async (req, res) => {
     // Estraiamo i parametrei
@@ -232,9 +238,9 @@ app.get("/api/loginUtente", function(req, res){
             res.json({ok:true})
         }
     });
-    }); // login utente andrea controlliam ocredenaziali valide
+    }); // Login utente (Andrea) controlliamo credenaziali valide
 
-app.post("/api/registrazioneUtente",express.urlencoded(),  function(req, res){  // registrazione utente andrea 
+app.post("/api/registrazioneUtente",express.urlencoded(),  function(req, res){  // Registrazione utente (Andrea) 
     var username=req.body.username
     var password=req.body.password
     Utente.insertMany([{username:username, password:password}]) //inseriamo nel database
@@ -264,7 +270,8 @@ app.get("/api/prenotazioni", function(req, res){  //ottenere prenotazioni per un
     })
 })
 
-app.delete("/api/prenotazione",express.urlencoded(), function(req,res){  //annullare prenotazione andrea
+//Annullare prenotazione (Andrea)
+app.delete("/api/prenotazione",express.urlencoded(), function(req,res){  
 
     var username=req.body.username
     var idViaggio=req.body.idViaggio
@@ -280,6 +287,7 @@ app.delete("/api/prenotazione",express.urlencoded(), function(req,res){  //annul
 
 })
 
+//Aggiunta nuovo viaggio (Sery)
 app.post("/api/viaggio", express.urlencoded(), function(req, res) {
     var codice = req.body.codice
     var partenza = req.body.partenza
@@ -318,7 +326,7 @@ app.post("/api/viaggio", express.urlencoded(), function(req, res) {
     })
 })
 
-// Elimina viaggio, carmine
+// Elimina viaggio (Carmine)
 app.delete("/api/viaggio", express.urlencoded(), function(req, res) {
     var codice = Number(req.body.id)
 

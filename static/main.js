@@ -1,3 +1,4 @@
+//Qui è inserita tutta la parte client (utente+admin)
 
 var utenteUsername=null
 var utentePassword=null // andrea
@@ -9,6 +10,7 @@ const fieldArrivo = $("#filtra-arrivo")
 const fieldData = $("#filtra-data")
 const fieldPasseggeri = $("#filtra-nposti-passeggeri")
 const fieldVeicoli = $("#filtra-nposti-veicoli")
+
 
 function aggiornaViaggi() {
     fetch('/api/viaggi?' + new URLSearchParams({
@@ -243,7 +245,7 @@ function login() {
         })
 }
 
-//Aggiunta delle rotte da parte dell'admin (Sery)
+//Aggiunta delle corse da parte dell'admin (Sery)
 function uploadCorse() {
     const username = $("#login-username").val()
     const password = $("#login-password").val()
@@ -311,7 +313,7 @@ function uploadCorse() {
     }
 }
 
-//login utente andrea
+//Login utente (Andrea)
 function loginUtente() {
     $("#loginUtente").removeClass("hidden")
     $("body").addClass("no-scrollbar")
@@ -337,7 +339,7 @@ function login_Utente(){
     }); // comunicazione col server;
 }
 
- // registrazione utente andrea
+ // Registrazione utente (Andrea)
 function popupRegistrazione() {
     $("#registrazioneUtente").removeClass("hidden")
     $("body").addClass("no-scrollbar")
@@ -357,17 +359,17 @@ function registrazione_Utente(){
         utentePassword=password
         caricaPrenotazioni()
 
-    }, "json"); // comunicazione col server; usiamo post
+    }, "json"); // Comunicazione col server; usiamo post
 }
 
-function nascondiPulsanti(username){  // nascondere i pulsanti dopo la registrazione o login andrea
+function nascondiPulsanti(username){  // Nascondere i pulsanti dopo la registrazione o login (Andrea)
     $("#pulsanteLoginUtente").hide();
     $("#pulsanteRegistrazioneUtente").hide();
     $("#messaggioLogin").text("ciao "+ username).removeClass("hidden")
 
 }
 
-function caricaPrenotazioni(){ //andrea 
+function caricaPrenotazioni(){ //Andrea 
      $("#listaPrenotazioni").empty()
      $("#prenotazioniEffettuate").removeClass("hidden")
      $.getJSON("/api/prenotazioni", {username: utenteUsername}, function(prenotazioni){
@@ -386,7 +388,7 @@ function caricaPrenotazioni(){ //andrea
             prenotazione.find(".template-prenotazione-data").text(new Date(prenotazioni[i].viaggio[0].data).toLocaleString())
             prenotazione.find(".template-prenotazione-numeroPasseggeri").text(prenotazioni[i].numero_passeggeri)
             prenotazione.find(".template-prenotazione-numeroVeicoli").text(prenotazioni[i].numero_veicoli)
-            prenotazione.find(".annullaPrenotazione").on("click", ()=>{ // annullare prenotazione andrea
+            prenotazione.find(".annullaPrenotazione").on("click", ()=>{ // annullare prenotazione (Andrea)
                 $.ajax({url:"/api/prenotazione",
                 method:"DELETE",
                 data:{username:utenteUsername, idViaggio:idViaggio, numeroPasseggeri:numeroPasseggeri, numeroVeicoli:numeroVeicoli}, success:function(){
@@ -399,6 +401,7 @@ function caricaPrenotazioni(){ //andrea
      })
 }
 
+//Carmine
 function eliminaViaggio() {
     $.ajax({
         url: "/api/viaggio",
@@ -415,7 +418,7 @@ $(".ricerca-viaggio-filtro").on("input", aggiornaViaggi)
 
 aggiornaViaggi()
 
-// Carichiamo i valori di autocomplete
+// Carichiamo i valori di autocomplete (Sery)
 fetch("/api/autocomplete-partenza")
     .then(r => r.json())
     .then(autocompletes => autocompletes.forEach(partenza => {

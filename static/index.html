@@ -14,19 +14,27 @@
         <h1>Surfando con le stelle</h1>
         <h2>SPERAndo che arrivi</h2>
     </div>
-    <button id="pulsanteLoginUtente" onclick="loginUtente()">   <!--aggiunto button login -->
+
+    <!--Aggiunto button login -->
+    <button id="pulsanteLoginUtente" onclick="loginUtente()">   
         Login
     </button>
 
-    <button id="pulsanteRegistrazioneUtente" onclick="popupRegistrazione()"> <!-- aggiunto button registrazione andrea -->
+    <!-- Aggiunto button registrazione utente (Andrea) -->
+    <button id="pulsanteRegistrazioneUtente" onclick="popupRegistrazione()"> 
         Registrati
     </button>
 
-    <h3 class="hidden" id="messaggioLogin">  </h3> <!-- messaggio che sostituisce i button andrea-->
+    <h3 class="hidden" id="messaggioLogin">  </h3> <!-- Messaggio che sostituisce i button (Andrea)-->
     <h3 class="hidden" id="prenotazioniEffettuate"> Prenotazioni effettuate </h3> <!--Sery-->
 
-    <ul id="listaPrenotazioni"> </ul> <!-- andrea -->
+    <!-- Andrea -->
+    <ul id="listaPrenotazioni"> </ul> 
+
+    <!--Biglietti disponibili-->
     <h3>Biglietti disponibili</h3>
+
+    <!--Buttun per ricercare una corsa-->
     <div class="ricerca-viaggio">
         <div class="ricerca-viaggio-filtro">
             <label for="filtra-partenza">
@@ -66,9 +74,8 @@
         </div>
     </div>
 
-
+    <!--Riquadro in cui viene mostrata la corsa disponibile con tutte le informazioni-->
     <ul id="lista-viaggi"></ul>
-
     <div id="template-viaggio" class="viaggio">
         <div>
             <b>Viaggio del</b> <span class="template-viaggio-data"> </span>
@@ -99,10 +106,12 @@
             <span class="template-viaggio-costo-veicolo"></span>€ a veicolo
         </div>
 
+        <!--Pulsante per acquistare-->
         <button class="template-viaggio-acquista">Acquista</button>
     </div>
 
-    <div class= "prenotazione" id="template-prenotazione" > <!--box prenotazioni andrea !-->
+    <!--Box prenotazioni utente effettuate (Andrea) !-->
+    <div class= "prenotazione" id="template-prenotazione" > 
         <div>
            <b>Partenza </b>  <span class="template-prenotazione-partenza"></span>
         </div>
@@ -119,10 +128,14 @@
             <b>Numero veicoli </b>  <span class="template-prenotazione-numeroVeicoli"></span>
          </div>
 
+         <!--Pulsante per annullare la prenotazione effettuata (Carmine)-->
          <button class="annullaPrenotazione" > ANNULLA</button>
     </div>
 
-    
+    <!--Acquista biglietto-->
+    <!--Quando l'utente preme il pulsante acquista, gli uscirà una schermata in cui vengono ricapitolate-->
+    <!--le informazioni della corsa selezionata-->
+    <!--In più l'utente dovrà aggiungere il numero passeggeri e/o veicoli e il numero della carta di credito per acquistare il bisglietto-->
     <div id="compra-biglietto" class="overlay hidden">
         <span id="compra-biglietto-meta-prezzo-passeggero" class="hidden"></span>
         <span id="compra-biglietto-meta-prezzo-veicolo" class="hidden"></span>
@@ -164,11 +177,13 @@
         </div>
     </div>
 
-    <!--Acquisto bislgietto-->
+    <!--Biglietto acquistato-->
+    <!--Una volta premuto su "Acquista, uscirà un messaggio di conferma acquisto con le relative informazioni"-->
+    <!--In più è presente un pulsante "stampa" per stampare il prototipo del biglietto-->
     <div id="biglietto-acquistato" class="overlay hidden">
         <div id="biglietto-acquistato-box" class="box">
             <span id="biglietto-acquistato-chiudi" class="chiudi" onclick="popupBigliettoAcquistatoChiudi()">X</span>
-            <h3>Grazie per l'acquisto</h3>
+            <h3>Grazie per l'acquisto!!</h3>
 
             <div>
                 Codice biglietto:
@@ -205,11 +220,11 @@
                 <span id="biglietto-acquistato-nveicoli"> </span>
             </div>
 
-            <button id="biglietto-acquistato-stampa-btn" onclick="window.print()">Stampa</button>
+            <button id="biglietto-acquistato-stampa-btn" onclick="window.print()">Stampa</button> <!--Bottone stampa-->
         </div>
     </div>
 
-    <!--Credenziali utente-->
+    <!--Credenziali dipendente-->
     <div id="login" class="overlay hidden">
         <div id="login-box" class="box">
             <h3>Inserire le credenziali</h3>
@@ -227,7 +242,7 @@
         </div>
     </div>
 
-<!-- aggiunto popup login  andrea --> 
+<!-- Aggiunto popup login utente (Andrea) --> 
     <div id="loginUtente" class="overlay hidden">
         <div id="loginUtente-box" class="box">
             <span class="chiudi" onclick="popupLoginChiudiUtente()">X</span>
@@ -247,7 +262,7 @@
         </div>
     </div>
 
-    <!-- aggiunto popup registrazione andrea-->
+    <!-- Aggiunto popup registrazione utente (Andrea)-->
     <div id="registrazioneUtente" class="overlay hidden">
         <div id="registrazioneUtente-box" class="box">
             <span class="chiudi" onclick="popupRegistrazioneChiudiUtente()">X</span>
@@ -267,7 +282,7 @@
         </div>
     </div>
 
-    <!--Aggiunta nuove rotte da parte dell'admin (Sery)-->
+    <!--Aggiunta nuove corse / Elimina corse da parte dell'admin (Sery + Carmine)-->
     <div id="admin" class="overlay hidden">
         <div class="box">
             <span id="admin-chiudi" class="chiudi" onclick="popupAdminChiudi()">X</span>

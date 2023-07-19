@@ -20,7 +20,7 @@ const log = winston.createLogger({
 
     transports: [
         new winston.transports.Console(),
-    ], 
+    ],
 })
 
 if (databaseName == "test-db") {
@@ -68,9 +68,9 @@ Admin.findOne({ username: 'admin' }).exec()
 
 //Aggiunta collezione utente al database Andrea
 const utenteSchema = new mongoose.Schema({
-        username: String,
-        password: String, // Hash
-    })
+    username: String,
+    password: String, // Hash
+})
 const Utente = mongoose.model('Utente', utenteSchema)
 
 
@@ -79,10 +79,10 @@ const prenotazioneSchema = new mongoose.Schema({
     usernameUtente: String,
     idViaggio: Number,
     numero_passeggeri: Number,
-    numero_veicoli:Number
-    
+    numero_veicoli: Number
+
 })
-const Prenotazione=mongoose.model('Prenotazione', prenotazioneSchema) // andrea
+const Prenotazione = mongoose.model('Prenotazione', prenotazioneSchema) // andrea
 
 const app = express()
 
@@ -215,7 +215,7 @@ app.post("/api/acquista", async (req, res) => {
     const hmacDigest = hmac.digest("base64")
 
 
-    Prenotazione.insertMany([{usernameUtente: utenteUsername, idViaggio:viaggioID, numero_passeggeri:numeroPasseggeri, numero_veicoli: numeroVeicoli}])//inserisco nel database andrea
+    Prenotazione.insertMany([{ usernameUtente: utenteUsername, idViaggio: viaggioID, numero_passeggeri: numeroPasseggeri, numero_veicoli: numeroVeicoli }])//inserisco nel database andrea
 
     res.json({ ...ticket, hmac: hmacDigest })
     log.info("Generata una prenotazione", { ip: req.ip, viaggioID, hmac: hmacDigest, prezzoTotale, numeroPasseggeri, numeroVeicoli, rand: prenotazione.rand })
@@ -228,67 +228,68 @@ app.post("/api/login", upload.none(), async (req, res) => {
     res.json({ ok })
 })
 
-app.get("/api/loginUtente", function(req, res){
-    var username= req.query.username
-    var password=req.query.password
-    Utente.findOne({username:username , password:password}).then(function(utente){  //controllo nel database 
-        if(utente==null){
-            res.json({ok:false})
-        }else {
-            res.json({ok:true})
+app.get("/api/loginUtente", function (req, res) {
+    var username = req.query.username
+    var password = req.query.password
+    Utente.findOne({ username: username, password: password }).then(function (utente) {  //controllo nel database 
+        if (utente == null) {
+            res.json({ ok: false })
+        } else {
+            res.json({ ok: true })
         }
     });
-    }); // Login utente (Andrea) controlliamo credenaziali valide
+}); // Login utente (Andrea) controlliamo credenaziali valide
 
-app.post("/api/registrazioneUtente",express.urlencoded(),  function(req, res){  // Registrazione utente (Andrea) 
-    var username=req.body.username
-    var password=req.body.password
-    Utente.insertMany([{username:username, password:password}]) //inseriamo nel database
+app.post("/api/registrazioneUtente", express.urlencoded(), function (req, res) {  // Registrazione utente (Andrea) 
+    var username = req.body.username
+    var password = req.body.password
+    Utente.insertMany([{ username: username, password: password }]) //inseriamo nel database
     console.log(username);
-    res.json({a:req.body.username, b:req.query.username});
+    res.json({ a: req.body.username, b: req.query.username });
 
 })
 
-app.get("/api/prenotazioni", function(req, res){  //ottenere prenotazioni per un username 
-    var username=req.query.username
+app.get("/api/prenotazioni", function (req, res) {  //ottenere prenotazioni per un username 
+    var username = req.query.username
     Prenotazione.aggregate([
         {
-            $match:{
+            $match: {
                 usernameUtente: username
             }
         },
         {
-            $lookup:{from: "viaggios",
-                     localField: "idViaggio",
-                    foreignField: "id",
-                    as:"viaggio"
-                    }
+            $lookup: {
+                from: "viaggios",
+                localField: "idViaggio",
+                foreignField: "id",
+                as: "viaggio"
+            }
         }
-    ]).then(function (prenotazioni){
+    ]).then(function (prenotazioni) {
         res.json(prenotazioni)
-        
+
     })
 })
 
 //Annullare prenotazione (Andrea)
-app.delete("/api/prenotazione",express.urlencoded(), function(req,res){  
+app.delete("/api/prenotazione", express.urlencoded(), function (req, res) {
 
-    var username=req.body.username
-    var idViaggio=req.body.idViaggio
-    var numeroPasseggeri=req.body.numeroPasseggeri
-    var numeroVeicoli=req.body.numeroVeicoli
-    Viaggio.updateOne({id:idViaggio},{$inc:{npostiPasseggeri:numeroPasseggeri, npostiVeicoli:numeroVeicoli}})  
-    .then(console.log).catch(console.log)
-    Prenotazione.deleteOne({usernameUtente:username, idViaggio:idViaggio})
-    .then(function(r){res.json({ok:true, r:r})})
-    .catch(function(error){res.json({ok:false, error:error})})
+    var username = req.body.username
+    var idViaggio = req.body.idViaggio
+    var numeroPasseggeri = req.body.numeroPasseggeri
+    var numeroVeicoli = req.body.numeroVeicoli
+    Viaggio.updateOne({ id: idViaggio }, { $inc: { npostiPasseggeri: numeroPasseggeri, npostiVeicoli: numeroVeicoli } })
+        .then(console.log).catch(console.log)
+    Prenotazione.deleteOne({ usernameUtente: username, idViaggio: idViaggio })
+        .then(function (r) { res.json({ ok: true, r: r }) })
+        .catch(function (error) { res.json({ ok: false, error: error }) })
 
     console.log(numeroPasseggeri, numeroVeicoli)
 
 })
 
 //Aggiunta nuovo viaggio (Sery)
-app.post("/api/viaggio", express.urlencoded(), function(req, res) {
+app.post("/api/viaggio", express.urlencoded(), function (req, res) {
     var codice = req.body.codice
     var partenza = req.body.partenza
     var arrivo = req.body.arrivo
@@ -301,49 +302,50 @@ app.post("/api/viaggio", express.urlencoded(), function(req, res) {
 
     console.log("Nuovo viaggio: " + codice)
 
-    Viaggio.findOne({id: codice}).exec()
-    .then(duplicato => {
-        if (duplicato != null) {
-            res.json({ok: false, msg: "Esiste un viaggio con lo stesso ID"})
-            return
-        }
-
-        Viaggio.insertMany([
-            {
-                id: codice,
-                partenza: partenza,
-                arrivo: arrivo,
-                data: data,
-                durata: durata,
-                npostiPasseggeri: numeroPasseggeri,
-                npostiVeicoli: numeroVeicoli,
-                prezzoPasseggero: prezzoPasseggero,
-                prezzoVeicolo: prezzoVeicolo,
+    Viaggio.findOne({ id: codice }).exec()
+        .then(duplicato => {
+            if (duplicato != null) {
+                res.json({ ok: false, msg: "Esiste un viaggio con lo stesso ID" })
+                return
             }
-        ])
 
-        res.json({ok: true})
-    })
+            Viaggio.insertMany([
+                {
+                    id: codice,
+                    partenza: partenza,
+                    arrivo: arrivo,
+                    data: data,
+                    durata: durata,
+                    npostiPasseggeri: numeroPasseggeri,
+                    npostiVeicoli: numeroVeicoli,
+                    prezzoPasseggero: prezzoPasseggero,
+                    prezzoVeicolo: prezzoVeicolo,
+                }
+            ])
+
+            res.json({ ok: true })
+        })
 })
 
 // Elimina viaggio (Carmine)
-app.delete("/api/viaggio", express.urlencoded(), function(req, res) {
+app.delete("/api/viaggio", express.urlencoded(), function (req, res) {
     var codice = Number(req.body.id)
 
-    console.log("Elimina viaggio:"+ codice)
+    console.log("Elimina viaggio:" + codice)
     Viaggio.findOne({ id: codice })
-    .then(function(viaggio) {
-        Prenotazione.find({idViaggio: codice })
-        .then(function(prenotazioni) {
-            for(var i =0;i<prenotazioni.length; i++) {
-                console.log("Annullamento prenotazione: " + codice, prenotazioni[i].usernameUtente)
-                rimborsaPrenotazione(prenotazioni)
-            }
+        .then(function (viaggio) {
+            Prenotazione.find({ idViaggio: codice })
+                .then(function (prenotazioni) {
+                    for (var i = 0; i < prenotazioni.length; i++) {
+                        console.log("Annullamento prenotazione: " + codice, prenotazioni[i].usernameUtente)
+                        rimborsaPrenotazione(prenotazioni)
+                    }
 
-            Viaggio.deleteOne({ id: codice })
-            res.json({ ok: true })
+                    Viaggio.deleteOne({ id: codice })
+                    Prenotazione.delete({ idViaggio: codice })
+                    res.json({ ok: true })
+                })
         })
-    })
 })
 function rimborsaPrenotazione(prenotazione) {
     console.log("Rimborso prenotazione: " + JSON.stringify(prenotazione))
@@ -375,3 +377,4 @@ async function isLoginValid(username, password) {
     return true
     // Avrei potuto usare return res != null, ma così è più chiaro
 }
+
